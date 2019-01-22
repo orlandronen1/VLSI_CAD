@@ -1,0 +1,20 @@
+AT PO: o -> 7.0/11.0
+CRIT PATH o(F): c->j->m->n->o
+CRIT PATH o(F): d->j->m->n->o
+CRIT PATH o(R): g->l->p->o
+CRIT PATH o(R): h->l->p->o
+RT PI: a -> 3.0/5.0
+RT PI: b -> 3.0/5.0
+RT PI: c -> 4.0/-1.0
+RT PI: d -> 4.0/-1.0
+RT PI: e -> 5.0/0.0
+RT PI: f -> 5.0/0.0
+RT PI: g -> 3.0/3.0
+RT PI: h -> 3.0/3.0
+SLACK i: +5/+3
+SLACK j: -1/+4
+SLACK k: +0/+5
+SLACK l: +3/+3
+SLACK m: +4/-1
+SLACK n: -1/+4
+SLACK p: +0/+3

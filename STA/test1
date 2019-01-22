@@ -1,0 +1,27 @@
+# example circuit
+# inputs
+PI a 0.0 0.0
+PI b 0.0 0.0
+PI c 0.0 0.0
+PI d 0.0 0.0
+PI e 0.0 0.0
+PI f 0.0 0.0
+PI g 0.0 0.0
+PI h 0.0 0.0
+
+# outputs
+PO o 10.0 10.0
+
+# gates
+# out gate_type gate_name inputs
+i NAND2_A ig a b
+j NAND2_B jg c d
+k NAND2_C kg e f
+l NAND2_B lg g h
+m NAND2_D mg j k
+n NAND2_E ng i m
+p NAND2_F pg m l
+o NAND2_G og n p
+
+# end
+

@@ -1,0 +1,19 @@
+#c17 iscas example
+PI 1gat 0.0 0.0
+PI 2gat 0.0 0.0
+PI 3gat 0.0 0.0
+PI 6gat 0.0 0.0
+PI 7gat 0.0 0.0
+
+# output
+PO 22gat 6.0 6.0
+PO 23gat 6.0 6.0
+
+# gates
+10gat	NAND2_B	g_10 1gat	3gat
+11gat	NAND2_A	g_11 3gat	6gat
+16gat	NAND2_C	g_16 2gat	11gat
+19gat	NAND2_A	g_19 11gat	7gat
+22gat	NAND2_C	g_22 10gat	16gat
+23gat	NAND2_A	g_23 16gat	19gat
+		

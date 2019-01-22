@@ -1,0 +1,23 @@
+AT PO: 22gat -> 6.0/5.0
+AT PO: 23gat -> 5.0/5.0
+CRIT PATH 22gat(F): 1gat->10gat->22gat
+CRIT PATH 22gat(F): 3gat->10gat->22gat
+CRIT PATH 22gat(F): 3gat->11gat->16gat->22gat
+CRIT PATH 22gat(F): 6gat->11gat->16gat->22gat
+CRIT PATH 22gat(R): 3gat->11gat->16gat->22gat
+CRIT PATH 22gat(R): 6gat->11gat->16gat->22gat
+CRIT PATH 23gat(F): 3gat->11gat->16gat->23gat
+CRIT PATH 23gat(F): 6gat->11gat->16gat->23gat
+CRIT PATH 23gat(R): 3gat->11gat->16gat->23gat
+CRIT PATH 23gat(R): 3gat->11gat->19gat->23gat
+CRIT PATH 23gat(R): 6gat->11gat->16gat->23gat
+CRIT PATH 23gat(R): 6gat->11gat->19gat->23gat
+RT PI: 1gat -> 1.0/1.0
+RT PI: 2gat -> 2.0/2.0
+RT PI: 3gat -> 1.0/0.0
+RT PI: 6gat -> 1.0/0.0
+RT PI: 7gat -> 3.0/3.0
+SLACK 10gat: +1/+1
+SLACK 11gat: +0/+1
+SLACK 16gat: +1/+0
+SLACK 19gat: +2/+1
