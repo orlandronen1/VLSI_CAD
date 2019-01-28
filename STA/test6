@@ -1,0 +1,469 @@
+PI 1gat 0 0
+PI 8gat 0 0
+PI 13gat 0 0
+PI 17gat 0 0
+PI 26gat 0 0
+PI 29gat 0 0
+PI 36gat 0 0
+PI 42gat 0 0
+PI 51gat 0 0
+PI 55gat 0 0
+PI 59gat 0 0
+PI 68gat 0 0
+PI 72gat 0 0
+PI 73gat 0 0
+PI 74gat 0 0
+PI 75gat 0 0
+PI 80gat 0 0
+PI 85gat 0 0
+PI 86gat 0 0
+PI 87gat 0 0
+PI 88gat 0 0
+PI 89gat 0 0
+PI 90gat 0 0
+PI 91gat 0 0
+PI 96gat 0 0
+PI 101gat 0 0
+PI 106gat 0 0
+PI 111gat 0 0
+PI 116gat 0 0
+PI 121gat 0 0
+PI 126gat 0 0
+PI 130gat 0 0
+PI 135gat 0 0
+PI 138gat 0 0
+PI 143gat 0 0
+PI 146gat 0 0
+PI 149gat 0 0
+PI 152gat 0 0
+PI 153gat 0 0
+PI 156gat 0 0
+PI 159gat 0 0
+PI 165gat 0 0
+PI 171gat 0 0
+PI 177gat 0 0
+PI 183gat 0 0
+PI 189gat 0 0
+PI 195gat 0 0
+PI 201gat 0 0
+PI 207gat 0 0
+PI 210gat 0 0
+PI 219gat 0 0
+PI 228gat 0 0
+PI 237gat 0 0
+PI 246gat 0 0
+PI 255gat 0 0
+PI 259gat 0 0
+PI 260gat 0 0
+PI 261gat 0 0
+PI 267gat 0 0
+PI 268gat 0 0
+PO 388gat 59 59
+PO 389gat 59 59
+PO 390gat 59 59
+PO 391gat 59 59
+PO 418gat 59 59
+PO 419gat 59 59
+PO 420gat 59 59
+PO 421gat 59 59
+PO 422gat 59 59
+PO 423gat 59 59
+PO 446gat 59 59
+PO 447gat 59 59
+PO 448gat 59 59
+PO 449gat 59 59
+PO 450gat 59 59
+PO 767gat 59 59
+PO 768gat 59 59
+PO 850gat 59 59
+PO 863gat 59 59
+PO 864gat 59 59
+PO 865gat 59 59
+PO 866gat 59 59
+PO 874gat 59 59
+PO 878gat 59 59
+PO 879gat 59 59
+PO 880gat 59 59
+269gat NAND4_A g_269gat 1gat 8gat 13gat 17gat 
+270gat NAND4_A g_270gat 1gat 26gat 13gat 17gat 
+273gat AND3_A g_273gat 29gat 36gat 42gat 
+276gat AND3_A g_276gat 1gat 26gat 51gat 
+279gat NAND4_A g_279gat 1gat 8gat 51gat 17gat 
+280gat NAND4_A g_280gat 1gat 8gat 13gat 55gat 
+284gat NAND4_A g_284gat 59gat 42gat 68gat 72gat 
+285gat NAND2_A g_285gat 29gat 68gat 
+286gat NAND3_A g_286gat 59gat 68gat 74gat 
+287gat AND3_A g_287gat 29gat 75gat 80gat 
+290gat AND3_A g_290gat 29gat 75gat 42gat 
+291gat AND3_A g_291gat 29gat 36gat 80gat 
+292gat AND3_A g_292gat 29gat 36gat 42gat 
+293gat AND3_A g_293gat 59gat 75gat 80gat 
+294gat AND3_A g_294gat 59gat 75gat 42gat 
+295gat AND3_A g_295gat 59gat 36gat 80gat 
+296gat AND3_A g_296gat 59gat 36gat 42gat 
+297gat AND2_A g_297gat 85gat 86gat 
+298gat OR2_A g_298gat 87gat 88gat 
+301gat NAND2_A g_301gat 91gat 96gat 
+302gat OR2_A g_302gat 91gat 96gat 
+303gat NAND2_A g_303gat 101gat 106gat 
+304gat OR2_A g_304gat 101gat 106gat 
+305gat NAND2_A g_305gat 111gat 116gat 
+306gat OR2_A g_306gat 111gat 116gat 
+307gat NAND2_A g_307gat 121gat 126gat 
+308gat OR2_A g_308gat 121gat 126gat 
+309gat AND2_A g_309gat 8gat 138gat 
+310gat NOT1_A g_310gat 268gat 
+316gat AND2_A g_316gat 51gat 138gat 
+317gat AND2_A g_317gat 17gat 138gat 
+318gat AND2_A g_318gat 152gat 138gat 
+319gat NAND2_A g_319gat 59gat 156gat 
+322gat NOR2_A g_322gat 17gat 42gat 
+323gat AND2_A g_323gat 17gat 42gat 
+324gat NAND2_A g_324gat 159gat 165gat 
+325gat OR2_A g_325gat 159gat 165gat 
+326gat NAND2_A g_326gat 171gat 177gat 
+327gat OR2_A g_327gat 171gat 177gat 
+328gat NAND2_A g_328gat 183gat 189gat 
+329gat OR2_A g_329gat 183gat 189gat 
+330gat NAND2_A g_330gat 195gat 201gat 
+331gat OR2_A g_331gat 195gat 201gat 
+332gat AND2_A g_332gat 210gat 91gat 
+333gat AND2_A g_333gat 210gat 96gat 
+334gat AND2_A g_334gat 210gat 101gat 
+335gat AND2_A g_335gat 210gat 106gat 
+336gat AND2_A g_336gat 210gat 111gat 
+337gat AND2_A g_337gat 255gat 259gat 
+338gat AND2_A g_338gat 210gat 116gat 
+339gat AND2_A g_339gat 255gat 260gat 
+340gat AND2_A g_340gat 210gat 121gat 
+341gat AND2_A g_341gat 255gat 267gat 
+342gat NOT1_A g_342gat 269gat 
+343gat NOT1_A g_343gat 273gat 
+344gat OR2_A g_344gat 270gat 273gat 
+345gat NOT1_A g_345gat 276gat 
+346gat NOT1_A g_346gat 276gat 
+347gat NOT1_A g_347gat 279gat 
+348gat NOR2_A g_348gat 280gat 284gat 
+349gat OR2_A g_349gat 280gat 285gat 
+350gat OR2_A g_350gat 280gat 286gat 
+351gat NOT1_A g_351gat 293gat 
+352gat NOT1_A g_352gat 294gat 
+353gat NOT1_A g_353gat 295gat 
+354gat NOT1_A g_354gat 296gat 
+355gat NAND2_A g_355gat 89gat 298gat 
+356gat AND2_A g_356gat 90gat 298gat 
+357gat NAND2_A g_357gat 301gat 302gat 
+360gat NAND2_A g_360gat 303gat 304gat 
+363gat NAND2_A g_363gat 305gat 306gat 
+366gat NAND2_A g_366gat 307gat 308gat 
+369gat NOT1_A g_369gat 310gat 
+375gat NOR2_A g_375gat 322gat 323gat 
+376gat NAND2_A g_376gat 324gat 325gat 
+379gat NAND2_A g_379gat 326gat 327gat 
+382gat NAND2_A g_382gat 328gat 329gat 
+385gat NAND2_A g_385gat 330gat 331gat 
+388gat BUF1_A g_388gat 290gat 
+389gat BUF1_A g_389gat 291gat 
+390gat BUF1_A g_390gat 292gat 
+391gat BUF1_A g_391gat 297gat 
+392gat OR2_A g_392gat 270gat 343gat 
+393gat NOT1_A g_393gat 345gat 
+399gat NOT1_A g_399gat 346gat 
+400gat AND2_A g_400gat 348gat 73gat 
+401gat NOT1_A g_401gat 349gat 
+402gat NOT1_A g_402gat 350gat 
+403gat NOT1_A g_403gat 355gat 
+404gat NOT1_A g_404gat 357gat 
+405gat NOT1_A g_405gat 360gat 
+406gat AND2_A g_406gat 357gat 360gat 
+407gat NOT1_A g_407gat 363gat 
+408gat NOT1_A g_408gat 366gat 
+409gat AND2_A g_409gat 363gat 366gat 
+410gat NAND2_A g_410gat 347gat 352gat 
+411gat NOT1_A g_411gat 376gat 
+412gat NOT1_A g_412gat 379gat 
+413gat AND2_A g_413gat 376gat 379gat 
+414gat NOT1_A g_414gat 382gat 
+415gat NOT1_A g_415gat 385gat 
+416gat AND2_A g_416gat 382gat 385gat 
+417gat AND2_A g_417gat 210gat 369gat 
+418gat BUF1_A g_418gat 342gat 
+419gat BUF1_A g_419gat 344gat 
+420gat BUF1_A g_420gat 351gat 
+421gat BUF1_A g_421gat 353gat 
+422gat BUF1_A g_422gat 354gat 
+423gat BUF1_A g_423gat 356gat 
+424gat NOT1_A g_424gat 400gat 
+425gat AND2_A g_425gat 404gat 405gat 
+426gat AND2_A g_426gat 407gat 408gat 
+427gat AND3_A g_427gat 319gat 393gat 55gat 
+432gat AND3_A g_432gat 393gat 17gat 287gat 
+437gat NAND3_A g_437gat 393gat 287gat 55gat 
+442gat NAND4_A g_442gat 375gat 59gat 156gat 393gat 
+443gat NAND3_A g_443gat 393gat 319gat 17gat 
+444gat AND2_A g_444gat 411gat 412gat 
+445gat AND2_A g_445gat 414gat 415gat 
+446gat BUF1_A g_446gat 392gat 
+447gat BUF1_A g_447gat 399gat 
+448gat BUF1_A g_448gat 401gat 
+449gat BUF1_A g_449gat 402gat 
+450gat BUF1_A g_450gat 403gat 
+451gat NOT1_A g_451gat 424gat 
+460gat NOR2_A g_460gat 406gat 425gat 
+463gat NOR2_A g_463gat 409gat 426gat 
+466gat NAND2_A g_466gat 442gat 410gat 
+475gat AND2_A g_475gat 143gat 427gat 
+476gat AND2_A g_476gat 310gat 432gat 
+477gat AND2_A g_477gat 146gat 427gat 
+478gat AND2_A g_478gat 310gat 432gat 
+479gat AND2_A g_479gat 149gat 427gat 
+480gat AND2_A g_480gat 310gat 432gat 
+481gat AND2_A g_481gat 153gat 427gat 
+482gat AND2_A g_482gat 310gat 432gat 
+483gat NAND2_A g_483gat 443gat 1gat 
+488gat OR2_A g_488gat 369gat 437gat 
+489gat OR2_A g_489gat 369gat 437gat 
+490gat OR2_A g_490gat 369gat 437gat 
+491gat OR2_A g_491gat 369gat 437gat 
+492gat NOR2_A g_492gat 413gat 444gat 
+495gat NOR2_A g_495gat 416gat 445gat 
+498gat NAND2_A g_498gat 130gat 460gat 
+499gat OR2_A g_499gat 130gat 460gat 
+500gat NAND2_A g_500gat 463gat 135gat 
+501gat OR2_A g_501gat 463gat 135gat 
+502gat AND2_A g_502gat 91gat 466gat 
+503gat NOR2_A g_503gat 475gat 476gat 
+504gat AND2_A g_504gat 96gat 466gat 
+505gat NOR2_A g_505gat 477gat 478gat 
+506gat AND2_A g_506gat 101gat 466gat 
+507gat NOR2_A g_507gat 479gat 480gat 
+508gat AND2_A g_508gat 106gat 466gat 
+509gat NOR2_A g_509gat 481gat 482gat 
+510gat AND2_A g_510gat 143gat 483gat 
+511gat AND2_A g_511gat 111gat 466gat 
+512gat AND2_A g_512gat 146gat 483gat 
+513gat AND2_A g_513gat 116gat 466gat 
+514gat AND2_A g_514gat 149gat 483gat 
+515gat AND2_A g_515gat 121gat 466gat 
+516gat AND2_A g_516gat 153gat 483gat 
+517gat AND2_A g_517gat 126gat 466gat 
+518gat NAND2_A g_518gat 130gat 492gat 
+519gat OR2_A g_519gat 130gat 492gat 
+520gat NAND2_A g_520gat 495gat 207gat 
+521gat OR2_A g_521gat 495gat 207gat 
+522gat AND2_A g_522gat 451gat 159gat 
+523gat AND2_A g_523gat 451gat 165gat 
+524gat AND2_A g_524gat 451gat 171gat 
+525gat AND2_A g_525gat 451gat 177gat 
+526gat AND2_A g_526gat 451gat 183gat 
+527gat NAND2_A g_527gat 451gat 189gat 
+528gat NAND2_A g_528gat 451gat 195gat 
+529gat NAND2_A g_529gat 451gat 201gat 
+530gat NAND2_A g_530gat 498gat 499gat 
+533gat NAND2_A g_533gat 500gat 501gat 
+536gat NOR2_A g_536gat 309gat 502gat 
+537gat NOR2_A g_537gat 316gat 504gat 
+538gat NOR2_A g_538gat 317gat 506gat 
+539gat NOR2_A g_539gat 318gat 508gat 
+540gat NOR2_A g_540gat 510gat 511gat 
+541gat NOR2_A g_541gat 512gat 513gat 
+542gat NOR2_A g_542gat 514gat 515gat 
+543gat NOR2_A g_543gat 516gat 517gat 
+544gat NAND2_A g_544gat 518gat 519gat 
+547gat NAND2_A g_547gat 520gat 521gat 
+550gat NOT1_A g_550gat 530gat 
+551gat NOT1_A g_551gat 533gat 
+552gat AND2_A g_552gat 530gat 533gat 
+553gat NAND2_A g_553gat 536gat 503gat 
+557gat NAND2_A g_557gat 537gat 505gat 
+561gat NAND2_A g_561gat 538gat 507gat 
+565gat NAND2_A g_565gat 539gat 509gat 
+569gat NAND2_A g_569gat 488gat 540gat 
+573gat NAND2_A g_573gat 489gat 541gat 
+577gat NAND2_A g_577gat 490gat 542gat 
+581gat NAND2_A g_581gat 491gat 543gat 
+585gat NOT1_A g_585gat 544gat 
+586gat NOT1_A g_586gat 547gat 
+587gat AND2_A g_587gat 544gat 547gat 
+588gat AND2_A g_588gat 550gat 551gat 
+589gat AND2_A g_589gat 585gat 586gat 
+590gat NAND2_A g_590gat 553gat 159gat 
+593gat OR2_A g_593gat 553gat 159gat 
+596gat AND2_A g_596gat 246gat 553gat 
+597gat NAND2_A g_597gat 557gat 165gat 
+600gat OR2_A g_600gat 557gat 165gat 
+605gat AND2_A g_605gat 246gat 557gat 
+606gat NAND2_A g_606gat 561gat 171gat 
+609gat OR2_A g_609gat 561gat 171gat 
+615gat AND2_A g_615gat 246gat 561gat 
+616gat NAND2_A g_616gat 565gat 177gat 
+619gat OR2_A g_619gat 565gat 177gat 
+624gat AND2_A g_624gat 246gat 565gat 
+625gat NAND2_A g_625gat 569gat 183gat 
+628gat OR2_A g_628gat 569gat 183gat 
+631gat AND2_A g_631gat 246gat 569gat 
+632gat NAND2_A g_632gat 573gat 189gat 
+635gat OR2_A g_635gat 573gat 189gat 
+640gat AND2_A g_640gat 246gat 573gat 
+641gat NAND2_A g_641gat 577gat 195gat 
+644gat OR2_A g_644gat 577gat 195gat 
+650gat AND2_A g_650gat 246gat 577gat 
+651gat NAND2_A g_651gat 581gat 201gat 
+654gat OR2_A g_654gat 581gat 201gat 
+659gat AND2_A g_659gat 246gat 581gat 
+660gat NOR2_A g_660gat 552gat 588gat 
+661gat NOR2_A g_661gat 587gat 589gat 
+662gat NOT1_A g_662gat 590gat 
+665gat AND2_A g_665gat 593gat 590gat 
+669gat NOR2_A g_669gat 596gat 522gat 
+670gat NOT1_A g_670gat 597gat 
+673gat AND2_A g_673gat 600gat 597gat 
+677gat NOR2_A g_677gat 605gat 523gat 
+678gat NOT1_A g_678gat 606gat 
+682gat AND2_A g_682gat 609gat 606gat 
+686gat NOR2_A g_686gat 615gat 524gat 
+687gat NOT1_A g_687gat 616gat 
+692gat AND2_A g_692gat 619gat 616gat 
+696gat NOR2_A g_696gat 624gat 525gat 
+697gat NOT1_A g_697gat 625gat 
+700gat AND2_A g_700gat 628gat 625gat 
+704gat NOR2_A g_704gat 631gat 526gat 
+705gat NOT1_A g_705gat 632gat 
+708gat AND2_A g_708gat 635gat 632gat 
+712gat NOR2_A g_712gat 337gat 640gat 
+713gat NOT1_A g_713gat 641gat 
+717gat AND2_A g_717gat 644gat 641gat 
+721gat NOR2_A g_721gat 339gat 650gat 
+722gat NOT1_A g_722gat 651gat 
+727gat AND2_A g_727gat 654gat 651gat 
+731gat NOR2_A g_731gat 341gat 659gat 
+732gat NAND2_A g_732gat 654gat 261gat 
+733gat NAND3_A g_733gat 644gat 654gat 261gat 
+734gat NAND4_A g_734gat 635gat 644gat 654gat 261gat 
+735gat NOT1_A g_735gat 662gat 
+736gat AND2_A g_736gat 228gat 665gat 
+737gat AND2_A g_737gat 237gat 662gat 
+738gat NOT1_A g_738gat 670gat 
+739gat AND2_A g_739gat 228gat 673gat 
+740gat AND2_A g_740gat 237gat 670gat 
+741gat NOT1_A g_741gat 678gat 
+742gat AND2_A g_742gat 228gat 682gat 
+743gat AND2_A g_743gat 237gat 678gat 
+744gat NOT1_A g_744gat 687gat 
+745gat AND2_A g_745gat 228gat 692gat 
+746gat AND2_A g_746gat 237gat 687gat 
+747gat NOT1_A g_747gat 697gat 
+748gat AND2_A g_748gat 228gat 700gat 
+749gat AND2_A g_749gat 237gat 697gat 
+750gat NOT1_A g_750gat 705gat 
+751gat AND2_A g_751gat 228gat 708gat 
+752gat AND2_A g_752gat 237gat 705gat 
+753gat NOT1_A g_753gat 713gat 
+754gat AND2_A g_754gat 228gat 717gat 
+755gat AND2_A g_755gat 237gat 713gat 
+756gat NOT1_A g_756gat 722gat 
+757gat NOR2_A g_757gat 727gat 261gat 
+758gat AND2_A g_758gat 727gat 261gat 
+759gat AND2_A g_759gat 228gat 727gat 
+760gat AND2_A g_760gat 237gat 722gat 
+761gat NAND2_A g_761gat 644gat 722gat 
+762gat NAND2_A g_762gat 635gat 713gat 
+763gat NAND3_A g_763gat 635gat 644gat 722gat 
+764gat NAND2_A g_764gat 609gat 687gat 
+765gat NAND2_A g_765gat 600gat 678gat 
+766gat NAND3_A g_766gat 600gat 609gat 687gat 
+767gat BUF1_A g_767gat 660gat 
+768gat BUF1_A g_768gat 661gat 
+769gat NOR2_A g_769gat 736gat 737gat 
+770gat NOR2_A g_770gat 739gat 740gat 
+771gat NOR2_A g_771gat 742gat 743gat 
+772gat NOR2_A g_772gat 745gat 746gat 
+773gat NAND4_A g_773gat 750gat 762gat 763gat 734gat 
+777gat NOR2_A g_777gat 748gat 749gat 
+778gat NAND3_A g_778gat 753gat 761gat 733gat 
+781gat NOR2_A g_781gat 751gat 752gat 
+782gat NAND2_A g_782gat 756gat 732gat 
+785gat NOR2_A g_785gat 754gat 755gat 
+786gat NOR2_A g_786gat 757gat 758gat 
+787gat NOR2_A g_787gat 759gat 760gat 
+788gat NOR2_A g_788gat 700gat 773gat 
+789gat AND2_A g_789gat 700gat 773gat 
+790gat NOR2_A g_790gat 708gat 778gat 
+791gat AND2_A g_791gat 708gat 778gat 
+792gat NOR2_A g_792gat 717gat 782gat 
+793gat AND2_A g_793gat 717gat 782gat 
+794gat AND2_A g_794gat 219gat 786gat 
+795gat NAND2_A g_795gat 628gat 773gat 
+796gat NAND2_A g_796gat 795gat 747gat 
+802gat NOR2_A g_802gat 788gat 789gat 
+803gat NOR2_A g_803gat 790gat 791gat 
+804gat NOR2_A g_804gat 792gat 793gat 
+805gat NOR2_A g_805gat 340gat 794gat 
+806gat NOR2_A g_806gat 692gat 796gat 
+807gat AND2_A g_807gat 692gat 796gat 
+808gat AND2_A g_808gat 219gat 802gat 
+809gat AND2_A g_809gat 219gat 803gat 
+810gat AND2_A g_810gat 219gat 804gat 
+811gat NAND4_A g_811gat 805gat 787gat 731gat 529gat 
+812gat NAND2_A g_812gat 619gat 796gat 
+813gat NAND3_A g_813gat 609gat 619gat 796gat 
+814gat NAND4_A g_814gat 600gat 609gat 619gat 796gat 
+815gat NAND4_A g_815gat 738gat 765gat 766gat 814gat 
+819gat NAND3_A g_819gat 741gat 764gat 813gat 
+822gat NAND2_A g_822gat 744gat 812gat 
+825gat NOR2_A g_825gat 806gat 807gat 
+826gat NOR2_A g_826gat 335gat 808gat 
+827gat NOR2_A g_827gat 336gat 809gat 
+828gat NOR2_A g_828gat 338gat 810gat 
+829gat NOT1_A g_829gat 811gat 
+830gat NOR2_A g_830gat 665gat 815gat 
+831gat AND2_A g_831gat 665gat 815gat 
+832gat NOR2_A g_832gat 673gat 819gat 
+833gat AND2_A g_833gat 673gat 819gat 
+834gat NOR2_A g_834gat 682gat 822gat 
+835gat AND2_A g_835gat 682gat 822gat 
+836gat AND2_A g_836gat 219gat 825gat 
+837gat NAND3_A g_837gat 826gat 777gat 704gat 
+838gat NAND4_A g_838gat 827gat 781gat 712gat 527gat 
+839gat NAND4_A g_839gat 828gat 785gat 721gat 528gat 
+840gat NOT1_A g_840gat 829gat 
+841gat NAND2_A g_841gat 815gat 593gat 
+842gat NOR2_A g_842gat 830gat 831gat 
+843gat NOR2_A g_843gat 832gat 833gat 
+844gat NOR2_A g_844gat 834gat 835gat 
+845gat NOR2_A g_845gat 334gat 836gat 
+846gat NOT1_A g_846gat 837gat 
+847gat NOT1_A g_847gat 838gat 
+848gat NOT1_A g_848gat 839gat 
+849gat AND2_A g_849gat 735gat 841gat 
+850gat BUF1_A g_850gat 840gat 
+851gat AND2_A g_851gat 219gat 842gat 
+852gat AND2_A g_852gat 219gat 843gat 
+853gat AND2_A g_853gat 219gat 844gat 
+854gat NAND3_A g_854gat 845gat 772gat 696gat 
+855gat NOT1_A g_855gat 846gat 
+856gat NOT1_A g_856gat 847gat 
+857gat NOT1_A g_857gat 848gat 
+858gat NOT1_A g_858gat 849gat 
+859gat NOR2_A g_859gat 417gat 851gat 
+860gat NOR2_A g_860gat 332gat 852gat 
+861gat NOR2_A g_861gat 333gat 853gat 
+862gat NOT1_A g_862gat 854gat 
+863gat BUF1_A g_863gat 855gat 
+864gat BUF1_A g_864gat 856gat 
+865gat BUF1_A g_865gat 857gat 
+866gat BUF1_A g_866gat 858gat 
+867gat NAND3_A g_867gat 859gat 769gat 669gat 
+868gat NAND3_A g_868gat 860gat 770gat 677gat 
+869gat NAND3_A g_869gat 861gat 771gat 686gat 
+870gat NOT1_A g_870gat 862gat 
+871gat NOT1_A g_871gat 867gat 
+872gat NOT1_A g_872gat 868gat 
+873gat NOT1_A g_873gat 869gat 
+874gat BUF1_A g_874gat 870gat 
+875gat NOT1_A g_875gat 871gat 
+876gat NOT1_A g_876gat 872gat 
+877gat NOT1_A g_877gat 873gat 
+878gat BUF1_A g_878gat 875gat 
+879gat BUF1_A g_879gat 876gat 
+880gat BUF1_A g_880gat 877gat 
