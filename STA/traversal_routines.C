@@ -7,44 +7,44 @@ using namespace::std;
 
 void forward_traversal(Library *pL, VertexQ *pQ) 
 {
-    Vertex curr_v;                  // Current Vertex
-    Edge curr_e;                    // Current Edge
-    TimingInfo r;                   // Rising timing info
-    TimingInfo f;                   // Falling timing info
-    double max_r;              // Max rising time to current node
-    double max_f;             // Max falling time to current node
-    double out_r;              // Rising time for out edges
-    double out_f;             // Falling time for out edges
+    Vertex* curr_v;     // Current Vertex
+    Edge* curr_e;       // Current Edge
+    TimingInfo r;       // Rising timing info
+    TimingInfo f;       // Falling timing info
+    double max_r;       // Max rising time to current node
+    double max_f;       // Max falling time to current node
+    double out_r;       // Rising time for out edges
+    double out_f;       // Falling time for out edges
 
-    while (Q.size() > 0)            // While queue is not empty
+    while (pQ->size() > 0)        // While queue is not empty
     {
-        curr_v = Q.front();         // Current vertex is front of queue
-        max_r = 0.0;           // Reset maxes
+        curr_v = pQ->front();     // Current vertex is front of queue
+        max_r = 0.0;            // Reset maxes
         max_f = 0.0;
 
         // Get max rising and falling times coming into this Vertex
-        curr_e = curr_v.FirstInEdge();
+        curr_e = curr_v->FirstInEdge();
         // For all in edges
-        for (int i = 0; i < curr_v.NumInEdges(); i++, curr_e = curr_v.NextInEdge())
+        for (int i = 0; i < curr_v->NumInEdges(); i++, curr_e = curr_v->NextInEdge())
         {
             // Get TimingInfo for curr_e
-            r = curr_e.Rising();
-            f = curr_e.Falling();
+            r = curr_e->Rising();
+            f = curr_e->Falling();
 
             // Check for higher ATs
-            if (*(r.AT()) > max_r)
-                max_r = r._at;
-            if (*(f.AT()) > max_f)
-                max_f = f._at;
+            if (r.AT() > max_r)
+                max_r = r.AT();
+            if (f.AT() > max_f)
+                max_f = f.AT();
         }
 
         // Get Vertex's characteristics
-        int type = curr_v.TheCell();
+        int type = curr_v->TheCell();
         double cell_r, cell_f;
-        pL.QueryCell(type, EDGE_R, cell_r);
-        pL.QueryCell(type, EDGE_F, cell_f);
+        pL->QueryCell(type, EDGE_R, cell_r);
+        pL->QueryCell(type, EDGE_F, cell_f);
 
-        if (curr_v.IsInverting())   // If current vertex is inverting
+        if (curr_v->IsInverting())   // If current vertex is inverting
         {
             out_r = max_f + cell_r;
             out_f = max_r + cell_f;
@@ -56,29 +56,30 @@ void forward_traversal(Library *pL, VertexQ *pQ)
         }
 
         // Update AT for all out edges
-        curr_e = curr_v.FirstOutEdge();
-        for (int i = 0; i < curr_v.NumOutEdges(); i++, curr_e = curr_v.NextOutEdge())
+        curr_e = curr_v->FirstOutEdge();
+        for (int i = 0; i < curr_v->NumOutEdges(); i++, curr_e = curr_v->NextOutEdge())
         {
-            r = curr_e.Rising();
-            *(r.AT()) = out_r;
-            f = curr_e.Falling();
-            *(f.AT()) = out_f;
+            r = curr_e->Rising();
+            r.AT() = out_r;
+            f = curr_e->Falling();
+            f.AT() = out_f;
             // Mark edge as ready
-            *(curr_e.IsReady()) = 1;
+            curr_e->IsReady() = 1;
         }
 
-        // Check next vertices. If they have NumInEdgesReady() == NumInEdges(), add to Q
-        for (int i = 0; i < curr_v.NumOutEdges(); i++, curr_e = curr_v.NextOutEdge)
+        // Check next vertices. If they have NumInEdgesReady() == NumInEdges(), add to pQ
+        curr_e = curr_v->FirstOutEdge();
+        for (int i = 0; i < curr_v->NumOutEdges(); i++, curr_e = curr_v->NextOutEdge())
         {
-            Vertex out_v = curr_e.FirstTarget();
-            for (int j = 0; j < curr_e.NumTargets(); j++, out_v = curr_e.NextTarget())
+            Vertex* out_v = curr_e->FirstTarget();
+            for (int j = 0; j < curr_e->NumTargets(); j++, out_v = curr_e->NextTarget())
             {
-                if (out_v.NumInEdges() == out_v.NumInEdgesReady())
-                    Q.push(&out_v);
+                if (out_v->NumInEdges() == out_v->NumInEdgesReady())
+                    pQ->push(out_v);
             }
         }
 
-        Q.pop();                    // Pop top of queue
+        pQ->pop();                    // Pop top of queue
     }    
 }
 
