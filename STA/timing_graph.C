@@ -397,7 +397,7 @@ Edge* TimingGraph::NextEdge()
 {
   Edge *e= NULL;
   if ( _e_cur == _edge_hash.end() ) return e;
-  if ( _e_cur++ != _edge_hash.end() ) e = (*_e_cur).second;
+  if ( ++_e_cur != _edge_hash.end() ) e = (*_e_cur).second;
   return e;
 }
 
