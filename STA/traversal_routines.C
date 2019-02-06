@@ -9,8 +9,6 @@ void forward_traversal(Library *pL, VertexQ *pQ)
 {
     Vertex* curr_v;     // Current Vertex
     Edge* curr_e;       // Current Edge
-    TimingInfo r;       // Rising timing info
-    TimingInfo f;       // Falling timing info
     double max_r;       // Max rising time to current node
     double max_f;       // Max falling time to current node
     double out_r;       // Rising time for out edges
@@ -19,7 +17,7 @@ void forward_traversal(Library *pL, VertexQ *pQ)
     while (pQ->size() > 0)        // While queue is not empty
     {
         curr_v = pQ->front();     // Current vertex is front of queue
-        max_r = 0.0;            // Reset maxes
+        max_r = 0.0;              // Reset maxes
         max_f = 0.0;
 
         // Get max rising and falling times coming into this Vertex
@@ -27,15 +25,11 @@ void forward_traversal(Library *pL, VertexQ *pQ)
         // For all in edges
         for (int i = 0; i < curr_v->NumInEdges(); i++, curr_e = curr_v->NextInEdge())
         {
-            // Get TimingInfo for curr_e
-            r = curr_e->Rising();
-            f = curr_e->Falling();
-
             // Check for higher ATs
-            if (r.AT() > max_r)
-                max_r = r.AT();
-            if (f.AT() > max_f)
-                max_f = f.AT();
+            if (curr_e->Rising().AT() > max_r)
+                max_r = curr_e->Rising().AT();
+            if (curr_e->Falling().AT() > max_f)
+                max_f = curr_e->Falling().AT();
         }
 
         // Get Vertex's characteristics
@@ -59,10 +53,9 @@ void forward_traversal(Library *pL, VertexQ *pQ)
         curr_e = curr_v->FirstOutEdge();
         for (int i = 0; i < curr_v->NumOutEdges(); i++, curr_e = curr_v->NextOutEdge())
         {
-            r = curr_e->Rising();
-            r.AT() = out_r;
-            f = curr_e->Falling();
-            f.AT() = out_f;
+            curr_e->Rising().AT() = out_r;
+            curr_e->Falling().AT() = out_f;
+
             // Mark edge as ready
             curr_e->IsReady() = 1;
         }
@@ -79,7 +72,7 @@ void forward_traversal(Library *pL, VertexQ *pQ)
             }
         }
 
-        pQ->pop();                    // Pop top of queue
+        pQ->pop();  // Pop top of queue
     }    
 }
 
@@ -106,6 +99,22 @@ void reverse_traversal(Library *pL, VertexQ *pQ)
         If the previous node's outputs all have their RTs calculated, add previous node to queue
             Need to keep an eye out for gates that drive >1 output
     */
+
+    Vertex* curr_v;     // Current Vertex
+    Edge* curr_e;       // Current Edge
+    double min_r;       // Min rising time to current node
+    double min_f;       // Min falling time to current node
+    double in_r;        // Rising time for in edges
+    double in_f;        // Falling time for in edges
+
+    while (pQ->size() > 0)  // While queue is not empty
+    {
+        curr_v = pQ->front();   // Current vertex is front of queue
+        min_r = 999999999.0;    // Reset mins to arbitrarily large value
+        min_f = 999999999.0;
+
+        
+    }
 }
 
 /* Compute all critical paths */
