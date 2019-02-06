@@ -169,7 +169,96 @@ void traversal_critical_path(EdgeS **pS, int &num_paths, Vertex *root,
     Edge* curr_e = starting_edge;   // Current Edge
     Edge* check_e;                  // For looping
     double min_slack= 999999999.0;  // Min slack rising or falling
-    int branches = 0;               // Number of branches left to account for
+    double check_slack;             // Slack to check against
+    int branches = 1;               // Number of branches left to account for (at least 1 path)
+    bool comparing_r = rising;      // If comparing rising or falling. Switches every
+                                    //  time an inverting gate is encountered.
+    int inverting;                  // If current gate is inverting
+
+
+    while (num_paths < branches)    // While there are paths not fully discovered
+    {
+        if (pS[num_paths] == NULL)      // If new path, create stack
+            pS[num_paths] = new EdgeS;
+        else
+        {
+            curr_e = pS[num_paths]->top();  // Start from top of this stack
+            pS[num_paths]->pop();           // Pop top off to prevent repeat edge
+        }
+
+        while (curr_e->NumSources() > 0)
+        {
+            pS[num_paths]->push(curr_e);    // Push current edge onto the stack
+            curr_v = curr_e->FirstSource(); // Update Vertex
+            inverting = curr_v->IsInverting();
+
+            // printf("\ncurr_e: ");
+            // printf(curr_e->Name());
+            // printf("\n");
+            // printf("curr_v: ");
+            // printf(curr_v->Name());
+            // printf("\n");
+            // printf("comparing_r: %d\n",comparing_r);
+            // printf("inverting: %d\n",inverting);
+
+            // Find minimum slack
+            min_slack = 999999999.0;    // Reset min
+            check_e = curr_v->FirstInEdge();
+            for (int i = 0; i < curr_v->NumInEdges(); i++)
+            {
+                // printf("check_e: ");
+                // printf(check_e->Name());
+                // printf("\n");
+
+                if (comparing_r && inverting)
+                    check_slack = check_e->Falling().SLACK();
+                else if (comparing_r && !inverting)
+                    check_slack = check_e->Rising().SLACK();
+                else if (!comparing_r && inverting)
+                    check_slack = check_e->Rising().SLACK();
+                else
+                    check_slack = check_e->Falling().SLACK();
+
+                if (check_slack < min_slack)
+                    min_slack = check_slack;
+
+                // printf("check_slack: %lf\n",check_slack);
+                // printf("min_slack: %lf\n",min_slack);
+
+                check_e = curr_v->NextInEdge();
+            }
+
+            // Get next edge
+            check_e = curr_v->FirstInEdge();
+            for (int i = 0; i < curr_v->NumInEdges(); i++)
+            {
+                if (comparing_r && inverting && check_e->Falling().SLACK() == min_slack)
+                    curr_e = check_e;
+                else if (comparing_r && !inverting && check_e->Rising().SLACK() == min_slack)
+                    curr_e = check_e;
+                else if (!comparing_r && inverting && check_e->Rising().SLACK() == min_slack)
+                    curr_e = check_e;
+                else if (!comparing_r && !inverting && check_e->Falling().SLACK() == min_slack)
+                    curr_e = check_e;
+
+                check_e = curr_v->NextInEdge();
+            }
+            
+            if (inverting)      // Invert if needed
+                comparing_r = !comparing_r;
+        }
+
+        num_paths++;    // TODO update this to reflect actual # of paths
+        pS[num_paths]->push(curr_e);
+    }
+
+    // printf("\nfinal_e: ");
+    // printf(curr_e->Name());
+    // printf("\n");
+
+    // printf("done\n\n\n");
+}
+
 
 //     do
 //     {   
@@ -253,23 +342,6 @@ void traversal_critical_path(EdgeS **pS, int &num_paths, Vertex *root,
 //     } while (branches > 0);     // While more branches to account for
 
 
-    while (curr_e->NumSources() > 0)
-    {
-        if (pS[num_paths] == NULL)
-            pS[num_paths] = new EdgeS;
-        
-        printf(curr_e->Name());
-        printf("\n");
 
-        pS[num_paths]->push(curr_e);
-
-
-
-        curr_v = curr_e->FirstSource();
-        curr_e = curr_v->FirstInEdge();
-    }
-
-    printf("done\n");
-}
 
 // End
