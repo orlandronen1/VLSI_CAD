@@ -165,7 +165,7 @@ void traversal_critical_path(EdgeS **pS, int &num_paths, Vertex *root,
     bool comparing_r = rising;      // If comparing rising or falling. Switches every
                                     //  time an inverting gate is encountered.
     int inverting;                  // If current gate is inverting
-
+    num_paths = 0;
 
     while (num_paths < branches)    // While there are paths not fully discovered
     {
@@ -280,9 +280,9 @@ void traversal_critical_path(EdgeS **pS, int &num_paths, Vertex *root,
         }
 
         // printf("Finished a path\n");
-        printf("curr_e: ");
-        printf(curr_e->Name());
-        printf("\n");
+        // printf("curr_e: ");
+        // printf(curr_e->Name());
+        // printf("\n");
         pS[num_paths]->push(curr_e);    // Push final pin onto stack
         num_paths++;    // update # of paths
 
