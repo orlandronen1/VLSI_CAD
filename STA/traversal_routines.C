@@ -156,54 +156,120 @@ void traversal_critical_path(EdgeS **pS, int &num_paths, Vertex *root,
 {
     /*
         root is a vertex connected to PO
+        num_paths = # of paths, increment with each branch
+        pS = array of stacks 
+        starting_edge = 
         rising = false means find falling-delay critical path, true means rising critical path
     */
+
+    // Keep in mind inverting gates!!!
+    // Have to track multiple paths somehow
+
+    Vertex* curr_v = root;          // Current Vertex
+    Edge* curr_e = starting_edge;   // Current Edge
+    Edge* check_e;                  // For looping
+    double min_slack= 999999999.0;  // Min slack rising or falling
+    int branches = 0;               // Number of branches left to account for
+
+//     do
+//     {   
+//         printf("1\n");
+//         if (pS[num_paths] == NULL)
+//             pS[num_paths] = new EdgeS;
+
+//         while (curr_e->NumSources() > 0)    // While not at a pin
+//         {
+//             printf("2\n");
+//             // Get min of available edges
+//             check_e = curr_v->FirstInEdge();
+//             for (int i = 0; i < curr_v->NumInEdges(); i++, check_e = curr_v->NextInEdge())
+//             {
+//                 if (rising)
+//                 {
+//                     if (check_e->Rising().SLACK() < min_slack)
+//                         min_slack = check_e->Rising().SLACK();
+//                 }
+//                 else
+//                 {
+//                     if (check_e->Falling().SLACK() < min_slack)
+//                         min_slack = check_e->Falling().SLACK();
+//                 }
+//             }
+// printf("3\n");
+//             // Check # of edges that match min that haven't been traversed, increment branches
+//             check_e = curr_v->FirstInEdge();
+//             for (int i = 0; i < curr_v->NumInEdges(); i++, check_e = curr_v->NextInEdge())
+//             {
+//                 if (rising)
+//                 {
+//                     if (check_e->Rising().SLACK() == min_slack && !check_e->IsReady())
+//                         branches++;
+//                 }
+//                 else
+//                 {
+//                     if (check_e->Falling().SLACK() == min_slack && !check_e->IsReady())
+//                         branches++;
+//                 }
+//             }
+// printf("4\n");
+//             // Find next edge to take
+//             check_e = curr_v->FirstInEdge();
+//             for (int i = 0; i < curr_v->NumInEdges(); i++)
+//             {
+//                 printf("check1\n");
+//                 printf(check_e->Name());
+//                 printf("\n");
+//                 if (rising)
+//                 {
+//                     if (check_e->Rising().SLACK() == min_slack && !check_e->IsReady())
+//                         goto pushStack;
+//                 }
+//                 else
+//                 {
+//                     if (check_e->Falling().SLACK() == min_slack && !check_e->IsReady())
+//                         goto pushStack;
+//                 }
+//                 check_e = curr_v->NextInEdge();
+//             }
+//  pushStack: 
+//             printf("check2\n");
+//             printf(check_e->Name());
+//             printf("\n");
+// printf("5\n");
+//             //curr_e = check_e;
+//             curr_e->IsReady() = 1;          // Set edge taken as ready
+//             printf("6\n");
+//             pS[num_paths]->push(curr_e);    // Push current edge to queue
+//             printf("7\n");
+//             curr_v = curr_e->FirstSource(); // Update curr_v to source of traversed edge
+//             printf("8\n");
+//             branches--;                     // Decrement branches
+//             min_slack = 999999999.0;        // Reset min
+//             printf("branches: %d\n",branches);
+//         }
+
+//         num_paths++;    // Finished a path, increment number of paths
+
+//     } while (branches > 0);     // While more branches to account for
+
+
+    while (curr_e->NumSources() > 0)
+    {
+        if (pS[num_paths] == NULL)
+            pS[num_paths] = new EdgeS;
+        
+        printf(curr_e->Name());
+        printf("\n");
+
+        pS[num_paths]->push(curr_e);
+
+
+
+        curr_v = curr_e->FirstSource();
+        curr_e = curr_v->FirstInEdge();
+    }
+
+    printf("done\n");
 }
-
-/* Notes
-
-    When dealing w/ non-inverting gates, add rising to rising and falling to falling
-    When dealing w/ inverting gates, add rising to next falling and falling to next rising
-
-    Arrival time (AT) = time elapsed for signal to arrive at certain point
-    Required time (RT) = latest time at which a signal can arrive to guarantee timing of output
-    Slack = RT - AT
-
-    Critical path is a path b/w input and output w/ maximum delay. Can have different paths for
-      rising/falling
-
-    Critical path method:
-        AT: traverse from input to output
-        RT: traverse from output to input
-        Slack: RT - AT
-        Critical path: search from output to input -> follow the slack
-            Path of lowest slack = critical path
-
-    Edge types (gates) enum vals: 
-        inverting are <= 8, non-inverting are >8 (handled in vertex)
-    Edges have rising and falling timing information (AT, RT, Slack)
-    Edges have list of sources and list of targets
-    Edges have int _is_ready
-
-    Vertex has list of in edges and out edges
-    Vertex DOESN'T have timing info
-    Vertex has field _cell, which is index of cell characteristics in library
-    Vertex tells if gate is inverting or not w/ IsInverting()
-    Can check how many in or out edges are ready -> use for checking if ready to add to queue
-
-    Pins are treated as edges
-
-
-    st_main process:
-    Populate queue w/ vertices whose in_edges are solely connected to PIs
-    forward_traversal(L = cell library, Q = queue w/ vertices)
-    Reset ready flag of each edge
-    Populate queue w/ vertices whose out_edges are POs
-    reverse_traversal(L,Q)
-    Calculate slacks
-    Populate queue w/ output edges only
-    While there are still vertices in the queue:
-        traversal_critical_path(EdgeS = stack of edges for critical path,)
-*/
 
 // End
