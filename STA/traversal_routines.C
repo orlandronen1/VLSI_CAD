@@ -154,56 +154,103 @@ void reverse_traversal(Library *pL, VertexQ *pQ)
 void traversal_critical_path(EdgeS **pS, int &num_paths, Vertex *root, 
                              Edge *starting_edge, bool rising) 
 {
-    /*
-        root is a vertex connected to PO
-        rising = false means find falling-delay critical path, true means rising critical path
-    */
+    Vertex* curr_v = root;          // Current Vertex
+    Edge* curr_e = starting_edge;   // Current Edge
+    Edge* check_e;                  // For looping
+    double min_slack= 999999999.0;  // Min slack rising or falling
+    double check_slack;             // Slack to check against
+    int branches = 1;               // Number of branches left to account for (at least 1 path)
+    bool branched = false;          // Whether or not a branch has already been discovered
+    bool alt_path = false;          // Whether or not another path has been discovered
+    bool comparing_r = rising;      // If comparing rising or falling. Switches every
+                                    //  time an inverting gate is encountered.
+    int inverting;                  // If current gate is inverting
+    num_paths = 0;
+
+    while (num_paths < branches)    // While there are paths not fully discovered
+    {
+        if (pS[num_paths] == NULL)      // If new path, create stack
+            pS[num_paths] = new EdgeS;
+        else
+        {
+            curr_e = pS[num_paths]->top();  // Start from top of this stack
+            pS[num_paths]->pop();           // Pop top off to prevent repeat edge
+        }
+
+        while (curr_e->NumSources() > 0)
+        {
+            pS[num_paths]->push(curr_e);    // Push current edge onto the stack
+            curr_v = curr_e->FirstSource(); // Update Vertex
+            inverting = curr_v->IsInverting();
+
+            // Find minimum slack
+            min_slack = 999999999.0;    // Reset min
+            check_e = curr_v->FirstInEdge();
+            for (int i = 0; i < curr_v->NumInEdges(); i++)
+            {
+                if (comparing_r && inverting)
+                    check_slack = check_e->Falling().SLACK();
+                else if (comparing_r && !inverting)
+                    check_slack = check_e->Rising().SLACK();
+                else if (!comparing_r && inverting)
+                    check_slack = check_e->Rising().SLACK();
+                else
+                    check_slack = check_e->Falling().SLACK();
+
+                if (check_slack < min_slack)
+                    min_slack = check_slack;
+
+                check_e = curr_v->NextInEdge();
+            }
+
+            // Get next edge
+            check_e = curr_v->FirstInEdge();
+            for (int i = 0; i < curr_v->NumInEdges(); i++)
+            {
+                if (!branched)  // If looking for first available path
+                {
+                    if (comparing_r && inverting && (check_e->Falling().SLACK() == min_slack))
+                    {    curr_e = check_e; branched = true;     }
+                    else if (comparing_r && !inverting && (check_e->Rising().SLACK() == min_slack))
+                    {    curr_e = check_e; branched = true;     }
+                    else if (!comparing_r && inverting && (check_e->Rising().SLACK() == min_slack))
+                    {    curr_e = check_e; branched = true;     }
+                    else if (!comparing_r && !inverting && (check_e->Falling().SLACK() == min_slack))
+                    {    curr_e = check_e; branched = true;     }
+                }
+                else            // If one branch has already been found
+                {
+                    if (comparing_r && inverting && check_e->Falling().SLACK() == min_slack)
+                        alt_path = true;//curr_e = check_e;
+                    else if (comparing_r && !inverting && check_e->Rising().SLACK() == min_slack)
+                        alt_path = true;//curr_e = check_e;
+                    else if (!comparing_r && inverting && check_e->Rising().SLACK() == min_slack)
+                        alt_path = true;//curr_e = check_e;
+                    else if (!comparing_r && !inverting && check_e->Falling().SLACK() == min_slack)
+                        alt_path = true;//curr_e = check_e;
+
+                    if (alt_path)           // If another path is found
+                    {
+                        pS[branches] = new EdgeS;
+                        *pS[branches] = *pS[num_paths]; // Copy current stack to next slot
+                        pS[branches]->push(check_e);    // Push new branch edge onto new stack
+                        branches++;         // Increment branch counter
+                        alt_path = false;   // Reset flag in case another branch appears
+                    }
+                }
+
+                check_e = curr_v->NextInEdge();
+            }
+            
+            branched = false;   // Reset flag
+
+            if (inverting)      // Invert if needed
+                comparing_r = !comparing_r;
+        }
+
+        pS[num_paths]->push(curr_e);    // Push final pin onto stack
+        num_paths++;    // update # of paths
+    }
 }
-
-/* Notes
-
-    When dealing w/ non-inverting gates, add rising to rising and falling to falling
-    When dealing w/ inverting gates, add rising to next falling and falling to next rising
-
-    Arrival time (AT) = time elapsed for signal to arrive at certain point
-    Required time (RT) = latest time at which a signal can arrive to guarantee timing of output
-    Slack = RT - AT
-
-    Critical path is a path b/w input and output w/ maximum delay. Can have different paths for
-      rising/falling
-
-    Critical path method:
-        AT: traverse from input to output
-        RT: traverse from output to input
-        Slack: RT - AT
-        Critical path: search from output to input -> follow the slack
-            Path of lowest slack = critical path
-
-    Edge types (gates) enum vals: 
-        inverting are <= 8, non-inverting are >8 (handled in vertex)
-    Edges have rising and falling timing information (AT, RT, Slack)
-    Edges have list of sources and list of targets
-    Edges have int _is_ready
-
-    Vertex has list of in edges and out edges
-    Vertex DOESN'T have timing info
-    Vertex has field _cell, which is index of cell characteristics in library
-    Vertex tells if gate is inverting or not w/ IsInverting()
-    Can check how many in or out edges are ready -> use for checking if ready to add to queue
-
-    Pins are treated as edges
-
-
-    st_main process:
-    Populate queue w/ vertices whose in_edges are solely connected to PIs
-    forward_traversal(L = cell library, Q = queue w/ vertices)
-    Reset ready flag of each edge
-    Populate queue w/ vertices whose out_edges are POs
-    reverse_traversal(L,Q)
-    Calculate slacks
-    Populate queue w/ output edges only
-    While there are still vertices in the queue:
-        traversal_critical_path(EdgeS = stack of edges for critical path,)
-*/
 
 // End
