@@ -78,28 +78,6 @@ void forward_traversal(Library *pL, VertexQ *pQ)
 
 void reverse_traversal(Library *pL, VertexQ *pQ) 
 {
-    /*  
-        ****Using a queue****
-        ****Want a breadth first traversal**** -> this way get entire level of circuit before going to further gates. just doing it from the end of the graph to the start.
-        Queue starts w/ vertices whose out_edges are POs
-
-        Output nodes should be given their RT based on circuit spec, probably just do a check for if curr node is output or not
-            If it is, just set RT to spec
-
-        RT of a node depends on if OUTPUT gate(s) are inverting/non-inverting
-        Iterate over all output (next) gates
-            Keep track of min
-            If next gate is non-inverting
-                RT rising = next gate's rising RT - next gate's rising delay
-                RT falling = next gate's falling RT - next gate's falling delay
-            Else
-                RT rising = next gate's falling RT - next gate's falling delay
-                RT falling = next gate's rising RT - next gate's rising delay
-
-        If the previous node's outputs all have their RTs calculated, add previous node to queue
-            Need to keep an eye out for gates that drive >1 output
-    */
-
     Vertex* curr_v;     // Current Vertex
     Edge* curr_e;       // Current Edge
     double min_r;       // Min rising time to current node
@@ -113,7 +91,62 @@ void reverse_traversal(Library *pL, VertexQ *pQ)
         min_r = 999999999.0;    // Reset mins to arbitrarily large value
         min_f = 999999999.0;
 
-        
+        // Get min rising and falling times coming from this Vertex
+        curr_e = curr_v->FirstOutEdge();
+        // For all out edges
+        for (int i = 0; i < curr_v->NumOutEdges(); i++, curr_e = curr_v->NextOutEdge())
+        {
+            // Check for higher ATs
+            if (curr_e->Rising().RT() < min_r)
+                min_r = curr_e->Rising().RT();
+            if (curr_e->Falling().RT() < min_f)
+                min_f = curr_e->Falling().RT();
+        }
+
+        // Get Vertex's characteristics
+        int type = curr_v->TheCell();
+        double cell_r, cell_f;
+        pL->QueryCell(type, EDGE_R, cell_r);
+        pL->QueryCell(type, EDGE_F, cell_f);
+
+        if (curr_v->IsInverting())   // If current vertex is inverting
+        {
+            in_r = min_f - cell_f;
+            in_f = min_r - cell_r;
+        }
+        else    // Else, current vertex is not inverting
+        {
+            in_r = min_r - cell_r;
+            in_f = min_f - cell_f;
+        }
+
+        // Update RT for all in edges
+        curr_e = curr_v->FirstInEdge();
+        for (int i = 0; i < curr_v->NumInEdges(); i++, curr_e = curr_v->NextInEdge())
+        {
+            // Avoid overwriting more critical results
+            if (curr_e->Rising().RT() > in_r)
+                curr_e->Rising().RT() = in_r;
+            if (curr_e->Falling().RT() > in_f)
+                curr_e->Falling().RT() = in_f;
+
+            // Mark edge as ready
+            curr_e->IsReady() = 1;
+        }
+
+        // Check next vertices. If they have NumInEdgesReady() == NumInEdges(), add to pQ
+        curr_e = curr_v->FirstInEdge();
+        for (int i = 0; i < curr_v->NumInEdges(); i++, curr_e = curr_v->NextInEdge())
+        {
+            Vertex* in_v = curr_e->FirstSource();
+            for (int j = 0; j < curr_e->NumSources(); j++, in_v = curr_e->NextSource())
+            {
+                if (in_v->NumOutEdges() == in_v->NumOutEdgesReady())
+                    pQ->push(in_v);
+            }
+        }
+
+        pQ->pop();  // Pop top of queue
     }
 }
 
