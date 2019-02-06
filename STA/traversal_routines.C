@@ -187,6 +187,11 @@ void traversal_critical_path(EdgeS **pS, int &num_paths, Vertex *root,
             printf("Starting alt path\n");
 
             curr_e = pS[num_paths]->top();  // Start from top of this stack
+
+            printf("Alt path start: ");
+            printf(curr_e->Name());
+            printf("\n");
+
             pS[num_paths]->pop();           // Pop top off to prevent repeat edge
         }
 
@@ -285,6 +290,8 @@ void traversal_critical_path(EdgeS **pS, int &num_paths, Vertex *root,
                 comparing_r = !comparing_r;
         }
 
+        printf("Finished a path\n");
+        
         pS[num_paths]->push(curr_e);    // Push final pin onto stack
         num_paths++;    // TODO update this to reflect actual # of paths (this might be fine?)
     }
