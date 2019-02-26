@@ -15,6 +15,8 @@
 /* Type definitions for gate types/cells/nodes: */
 typedef struct node
 {
+  int _id;    // ID for DAG
+  int _type;  // Type of cell, i.e. ID of cell
   int _num_inputs;
   int _num_outputs;
   int _delay;
@@ -24,12 +26,14 @@ typedef struct node
 
 typedef struct simple_cell
 {
+  int _id;
   int _num_inputs;
   int _delay;
 } simple;
 
 typedef struct complex_cell
 {
+  int _id;
   int _u;
   int _v;
   int _d;
@@ -57,10 +61,16 @@ typedef struct forest
   DAG* _dags;
 } forest;
 
-/* Functions: */
-node new_node(int in, int out, int delay)
+
+/************************************************************************
+****************************    Functions    ****************************
+************************************************************************/
+
+// Creates a new node from 
+node new_node(int id, int type, int in, int out, int delay)
 {
   node ret;
+  ret._id = id;
   ret._num_inputs = in;
   ret._num_outputs = out;
   ret._delay = delay;
@@ -69,6 +79,26 @@ node new_node(int in, int out, int delay)
   return ret;
 }
 
+// Print simple cell
+void print_simple(simple s)
+{
+  printf("Simple | ID: %d  in: %d  delay: %d\n",s._id,s._num_inputs,s._delay);
+}
+
+// Print complex cell
+void print_complex(complex c)
+{
+  printf("Complex | ID: %d  u: %d  v: %d  d: %d  e: %d\n",c._id,c._u,c._v,c._d,c._e);
+}
+
+// Print library of cells
+void print_lib(cell_lib l)
+{
+  for (int i = 0; i < l._num_simple; i++)
+    print_simple(l._s[i]);
+  for (int i = 0; i < l._num_complex; i++)
+    print_complex(l._c[i]);
+}
 
 /************************************************************************
 ***************************    Main Program    **************************
@@ -76,6 +106,8 @@ node new_node(int in, int out, int delay)
 int main (int argc, char *argv[])
 {
   int max_delay = 0;
+  cell_lib LIB;
+  int ID = 0; // for assigning _id to simple and complex cells in LIB
   FILE *fp;
 
   /* Make sure there's a file name argument: */
@@ -92,7 +124,6 @@ int main (int argc, char *argv[])
   }
 
   /* Read in gate info */
-
   /* 
     First line = G = # of simple cells
     Next G lines will be the simple cell info
@@ -103,15 +134,19 @@ int main (int argc, char *argv[])
   int G, num_inputs, delta;
   fscanf(fp, "%d", &G);
   // printf("%d\n", G);
+  LIB._num_simple = G;  // Initialize number of simple cells in library
+  LIB._s = malloc(sizeof(simple) * G);  // Allocate memory for simple cells in lib
 
   for (int i = 0; i < G; i++)
   {
     fscanf(fp, "%d %d", &num_inputs, &delta);
     // printf("%d %d\n", num_inputs, delta);
+    LIB._s[i]._id = ID++;
+    LIB._s[i]._num_inputs = num_inputs;
+    LIB._s[i]._delay = delta;
   }
 
   /* Read in cell info */
-
   /* 
     Next line/single int = C = # of complex cells
     Next C lines will be complex cell info
@@ -126,15 +161,21 @@ int main (int argc, char *argv[])
   int C, u, v, d, e;
   fscanf(fp, "%d", &C);
   // printf("%d\n", C);
+  LIB._num_complex = C;
+  LIB._c = malloc(sizeof(complex) * C);
 
   for (int i = 0; i < C; i++)
   {
     fscanf(fp, "%d %d %d %d", &u, &v, &d, &e);
     // printf("%d %d %d %d\n", u, v, d, e);
+    LIB._c[i]._id = ID++;
+    LIB._c[i]._u = u;
+    LIB._c[i]._v = v;
+    LIB._c[i]._d = d;
+    LIB._c[i]._e = e;
   }
 
   /* Read in the DAG */
-
   /* 
     Next line has 2 ints, I and N
       I = # of primary inputs in the DAG
@@ -150,10 +191,12 @@ int main (int argc, char *argv[])
   int I, N;
   fscanf(fp, "%d %d", &I, &N);
   // printf("%d %d\n", I, N);
+  int delays[N];
 
   for (int i = 0; i < N; i++)
   {
-    
+    delays[i] = 0;
+    // Build the DAG;
   }
 
   /* Done with reading the input: */
@@ -162,10 +205,12 @@ int main (int argc, char *argv[])
   /* Compute the best delay solution at each node.
    * Traversal is in topological order.
    * 
-   * Need to split DAG into new trees when a node has >1 fanout
+   * Need to split DAG into new trees when a node has >1 fanout (maybe?)
    */
 
   /* ... */
+
+  print_lib(LIB);
 
   /* Print the solution: */
   printf ("%d\n", max_delay);
