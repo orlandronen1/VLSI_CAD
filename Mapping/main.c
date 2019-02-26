@@ -11,14 +11,15 @@
 #define MAX_GATE_INPUTS	2
 #define MAX_CELL_TYPES	20
 #define MAX_DAG_NODES	100000
-#define INIT_NEXT_LIST_SIZE 2
 
 /* Type definitions for gate types/cells/nodes: */
 typedef struct node
 {
   int _num_inputs;
+  int _num_outputs;
   int _delay;
-  int* _next;
+  int* _in;
+  int* _out;
 } node;
 
 typedef struct simple_cell
@@ -35,22 +36,43 @@ typedef struct complex_cell
   int _e;
 } complex;
 
-typedef struct simple_library
+typedef struct cell_library
+{
+  int _num_simple;
+  int _num_complex;
+  simple* _s;
+  complex* _c;
+} cell_lib;
+
+typedef struct DAG
 {
   int _size;
-  simple* _cells;
-} simple_lib;
+  node* _PI;
+  node* _PO;
+} DAG;
 
-typedef struct complex_library
+typedef struct forest
 {
   int _size;
-  complex* _cells;
-} complex_lib;
+  DAG* _dags;
+} forest;
 
-/* Data structure declarations: */
+/* Functions: */
+node new_node(int in, int out, int delay)
+{
+  node ret;
+  ret._num_inputs = in;
+  ret._num_outputs = out;
+  ret._delay = delay;
+  ret._in = malloc(sizeof(int) * in);
+  ret._out = malloc(sizeof(int) * out);
+  return ret;
+}
 
-/* ... */
 
+/************************************************************************
+***************************    Main Program    **************************
+************************************************************************/
 int main (int argc, char *argv[])
 {
   int max_delay = 0;
