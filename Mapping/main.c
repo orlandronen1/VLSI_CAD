@@ -47,6 +47,15 @@ int main (int argc, char *argv[])
       first # on these lines is # of inputs
       second # is delta t, i.e. delay
   */
+  int G, num_inputs, delta;
+  fscanf(fp, "%d", &G);
+  // printf("%d\n", G);
+
+  for (int i = 0; i < G; i++)
+  {
+    fscanf(fp, "%d %d", &num_inputs, &delta);
+    // printf("%d %d\n", num_inputs, delta);
+  }
 
   /* Read in cell info */
 
@@ -61,6 +70,15 @@ int main (int argc, char *argv[])
         Delay d applies to inputs of u and delay e applies to inputs of v
       Wire connecting u to v will disappear after covering
    */
+  int C, u, v, d, e;
+  fscanf(fp, "%d", &C);
+  // printf("%d\n", C);
+
+  for (int i = 0; i < C; i++)
+  {
+    fscanf(fp, "%d %d %d %d", &u, &v, &d, &e);
+    // printf("%d %d %d %d\n", u, v, d, e);
+  }
 
   /* Read in the DAG */
 
@@ -76,6 +94,14 @@ int main (int argc, char *argv[])
         Gates specified in topological order -> a line that describes gate X will only
          contain fanin nodes w/ identifier < X. Node w/o fanouts connects to primary output.
    */
+  int I, N;
+  fscanf(fp, "%d %d", &I, &N);
+  // printf("%d %d\n", I, N);
+
+  for (int i = 0; i < N; i++)
+  {
+    
+  }
 
   /* Done with reading the input: */
   fclose (fp);
