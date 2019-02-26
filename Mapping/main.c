@@ -11,10 +11,41 @@
 #define MAX_GATE_INPUTS	2
 #define MAX_CELL_TYPES	20
 #define MAX_DAG_NODES	100000
+#define INIT_NEXT_LIST_SIZE 2
 
 /* Type definitions for gate types/cells/nodes: */
+typedef struct node
+{
+  int _num_inputs;
+  int _delay;
+  int* _next;
+} node;
 
-/* ... */
+typedef struct simple_cell
+{
+  int _num_inputs;
+  int _delay;
+} simple;
+
+typedef struct complex_cell
+{
+  int _u;
+  int _v;
+  int _d;
+  int _e;
+} complex;
+
+typedef struct simple_library
+{
+  int _size;
+  simple* _cells;
+} simple_lib;
+
+typedef struct complex_library
+{
+  int _size;
+  complex* _cells;
+} complex_lib;
 
 /* Data structure declarations: */
 
