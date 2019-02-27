@@ -327,52 +327,47 @@ int main (int argc, char *argv[])
         for (int j = 0; j < DAG[n]._num_inputs; j++)
         {
           int prev = DAG[n]._in[j];
-          // If match and that node doesn't have >1 output, full match to complex cell.
-          if (DAG[prev]._type == LIB._c[i]._u)// && DAG[prev]._num_outputs == 1)
+          // If match u, full match to complex cell.
+          if (DAG[prev]._type == LIB._c[i]._u)
           {
-            printf("%d\n",n);
-            printf("num_in: %d\n",LIB._c[i]._num_inputs);
-            printf("prev: %d\n",prev);
             // Calculate max of (u max(in_delays) + d) and (v max(in_delays) + e)
             int u_delay = max_input_delay(DAG[prev], DAG) + LIB._c[i]._d;
-            printf("u_delay: %d = max_in: %d  +  d: %d\n",u_delay, max_input_delay(DAG[prev],DAG),LIB._c[i]._d);
-            int v_delay = LIB._c[i]._e;// = LIB._s[DAG[n]._type]._delay + LIB._c[i]._e;
-            if (LIB._c[i]._num_inputs == 2) // v node has 2 inputs
+            int v_delay = LIB._c[i]._e;   // v delay is at least e delay from complex cell
+
+            if (LIB._c[i]._num_inputs == 2) // Only 2 inputs for complex cell
             {
-              if (DAG[n]._num_inputs == 2)
+              if (DAG[n]._num_inputs == 2)  // v node has 2 inputs
               {
                 int other = DAG[n]._in[1 - j]; // The other input node
-                printf("other: %d\n",other);
                 v_delay += DAG[other]._delay;
-                printf("v_delay: %d = max_in: %d  +  e: %d\n",v_delay, DAG[DAG[n]._in[1-j]]._delay,LIB._c[i]._e);
               }
-              else
-              {
-                printf("v0\n");
-              } 
             }
             else
-            {int other = DAG[n]._in[1 - j]; // The other input node
-                printf("other: %d\n",other);
-                v_delay += DAG[other]._delay;
-              printf("v_delay: %d\n",v_delay);
+            {
+              int other = DAG[n]._in[1 - j]; // The other input node
+              v_delay += DAG[other]._delay;
             }
-            
-            int complex_delay = max(u_delay, v_delay);    
-            printf("complex delay: %d\n",complex_delay);
+            int complex_delay = max(u_delay, v_delay);
+
             // If complex match's delay is < current delay, update current delay
             if (complex_delay < DAG[n]._delay)
-            {  DAG[n]._delay = complex_delay; printf("min delay\n");}
+              DAG[n]._delay = complex_delay;
           }
         }
       }
     }
   }
 
-
   // print_lib(LIB);
-  for (int i = 0; i < I+N; i++)
-    print_node(DAG[i]);
+  // for (int i = 0; i < I+N; i++)
+  //   print_node(DAG[i]);
+
+  // Check each primary output
+  for (int n = I; n < I + N; n++)
+  {
+    if (DAG[n]._num_outputs == 0)
+      max_delay = max(DAG[n]._delay, max_delay);
+  }
 
   /* Print the solution: */
   printf ("%d\n", max_delay);
