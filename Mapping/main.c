@@ -51,20 +51,6 @@ typedef struct cell_library
   complex* _c;
 } cell_lib;
 
-// Just make an array of node for the DAG
-// typedef struct DAG
-// {
-//   int _size;
-//   node* _PI;
-//   node* _PO;
-// } DAG;
-
-// typedef struct forest
-// {
-//   int _size;
-//   DAG* _dags;
-// } forest;
-
 
 /************************************************************************
 ****************************    Functions    ****************************
@@ -79,7 +65,12 @@ node new_node(int id, int type)
   
   ret._num_inputs = 0;
   ret._num_outputs = 0;
-  ret._delay = INT_MAX;   // Initialize at max value
+
+  if (type == -1)
+    ret._delay = 0;         // If primary input, delay is 0
+  else
+    ret._delay = INT_MAX;   // Initialize at max value
+
   ret._in = malloc(sizeof(int) * MAX_GATE_INPUTS);
 
   ret._size = MAX_GATE_INPUTS; // Pick a minimum size to alloc
@@ -127,6 +118,40 @@ int get_num_inputs(int cell_id, cell_lib lib)
   else
     return lib._c[cell_id - lib._num_simple - 1]._num_inputs;
 }
+
+// Returns max of two ints
+int max(int a, int b)
+{
+  if (a > b)
+    return a;
+  else
+    return b;  
+}
+
+// Returns min of two ints
+int min(int a, int b)
+{
+  if (a < b)
+    return a;
+  else
+    return b;
+}
+
+// Returns max delay of input nodes to input node
+int max_input_delay(node n, node* d)
+{
+  int id = n._id;
+  if (d[id]._num_inputs == 1)   // Only one input, return its delay
+    return d[d[id]._in[0]]._delay;
+  else                            // Get max of input delays
+  {
+    int first = d[id]._in[0];
+    int second = d[id]._in[1];
+    return max(d[first]._delay, d[second]._delay);
+  }
+  
+}
+
 
 // Print simple cell
 void print_simple(simple s)
@@ -234,7 +259,7 @@ int main (int argc, char *argv[])
     LIB._c[i]._v = v;
     LIB._c[i]._d = d;
     LIB._c[i]._e = e;
-    LIB._c[i]._num_inputs = get_num_inputs(u, LIB) + get_num_inputs(v, LIB);
+    LIB._c[i]._num_inputs = get_num_inputs(u, LIB) + get_num_inputs(v, LIB) - 1;
   }
 
   /* Read in the DAG */
@@ -264,7 +289,7 @@ int main (int argc, char *argv[])
   {
     fscanf(fp, "%d", &type); // Get gate type
     DAG[n] = new_node(n, type);
-    num_in = get_num_inputs(type, LIB);
+    num_in = get_num_inputs(type, LIB); // Number of inputs to this node
     for (int i = 0; i < num_in; i++)
     {
       fscanf(fp, "%d", &in);
@@ -279,13 +304,73 @@ int main (int argc, char *argv[])
 
   /* Compute the best delay solution at each node.
    * Traversal is in topological order.
-   * 
-   * Need to split DAG into new trees when a node has >1 fanout (maybe?)
    */
+  for (int n = I; n < I + N; n++) // For each non-primary input node
+  {
+    // Check for simple matches
+    for (int i = 0; i < LIB._num_simple; i++)
+    {
+      // If match, find max delay of inputs and add own delay, break
+      if (DAG[n]._type == LIB._s[i]._id)
+      {
+        DAG[n]._delay = max_input_delay(DAG[n], DAG) + LIB._s[i]._delay;
+        break;
+      }
+    }
+
+    // Check for complex matches -> node type must match the v of a complex cell
+    for (int i = 0; i < LIB._num_complex; i++)
+    {
+      // If match v, check for an input that matches the u for the complex cell
+      if (DAG[n]._type == LIB._c[i]._v)
+      {
+        for (int j = 0; j < DAG[n]._num_inputs; j++)
+        {
+          int prev = DAG[n]._in[j];
+          // If match and that node doesn't have >1 output, full match to complex cell.
+          if (DAG[prev]._type == LIB._c[i]._u)// && DAG[prev]._num_outputs == 1)
+          {
+            printf("%d\n",n);
+            printf("num_in: %d\n",LIB._c[i]._num_inputs);
+            printf("prev: %d\n",prev);
+            // Calculate max of (u max(in_delays) + d) and (v max(in_delays) + e)
+            int u_delay = max_input_delay(DAG[prev], DAG) + LIB._c[i]._d;
+            printf("u_delay: %d = max_in: %d  +  d: %d\n",u_delay, max_input_delay(DAG[prev],DAG),LIB._c[i]._d);
+            int v_delay = LIB._c[i]._e;// = LIB._s[DAG[n]._type]._delay + LIB._c[i]._e;
+            if (LIB._c[i]._num_inputs == 2) // v node has 2 inputs
+            {
+              if (DAG[n]._num_inputs == 2)
+              {
+                int other = DAG[n]._in[1 - j]; // The other input node
+                printf("other: %d\n",other);
+                v_delay += DAG[other]._delay;
+                printf("v_delay: %d = max_in: %d  +  e: %d\n",v_delay, DAG[DAG[n]._in[1-j]]._delay,LIB._c[i]._e);
+              }
+              else
+              {
+                printf("v0\n");
+              } 
+            }
+            else
+            {int other = DAG[n]._in[1 - j]; // The other input node
+                printf("other: %d\n",other);
+                v_delay += DAG[other]._delay;
+              printf("v_delay: %d\n",v_delay);
+            }
+            
+            int complex_delay = max(u_delay, v_delay);    
+            printf("complex delay: %d\n",complex_delay);
+            // If complex match's delay is < current delay, update current delay
+            if (complex_delay < DAG[n]._delay)
+            {  DAG[n]._delay = complex_delay; printf("min delay\n");}
+          }
+        }
+      }
+    }
+  }
 
 
-
-  print_lib(LIB);
+  // print_lib(LIB);
   for (int i = 0; i < I+N; i++)
     print_node(DAG[i]);
 
