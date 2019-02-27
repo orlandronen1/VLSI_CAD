@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #define MAX_GATE_TYPES	10
 #define MAX_GATE_INPUTS	2
@@ -17,11 +18,12 @@ typedef struct node
 {
   int _id;    // ID for DAG
   int _type;  // Type of cell, i.e. ID of cell
+  int _size;  // Size of _out for malloc/realloc purposes
   int _num_inputs;
   int _num_outputs;
-  int _delay;
-  int* _in;
-  int* _out;
+  int _delay; // Best delay found for this node
+  int* _in;   // Input nodes
+  int* _out;  // Output nodes
 } node;
 
 typedef struct simple_cell
@@ -38,6 +40,7 @@ typedef struct complex_cell
   int _v;
   int _d;
   int _e;
+  int _num_inputs;
 } complex;
 
 typedef struct cell_library
@@ -48,35 +51,81 @@ typedef struct cell_library
   complex* _c;
 } cell_lib;
 
-typedef struct DAG
-{
-  int _size;
-  node* _PI;
-  node* _PO;
-} DAG;
+// Just make an array of node for the DAG
+// typedef struct DAG
+// {
+//   int _size;
+//   node* _PI;
+//   node* _PO;
+// } DAG;
 
-typedef struct forest
-{
-  int _size;
-  DAG* _dags;
-} forest;
+// typedef struct forest
+// {
+//   int _size;
+//   DAG* _dags;
+// } forest;
 
 
 /************************************************************************
 ****************************    Functions    ****************************
 ************************************************************************/
 
-// Creates a new node from 
-node new_node(int id, int type, int in, int out, int delay)
+// Creates a new node 
+node new_node(int id, int type)
 {
   node ret;
   ret._id = id;
-  ret._num_inputs = in;
-  ret._num_outputs = out;
-  ret._delay = delay;
-  ret._in = malloc(sizeof(int) * in);
-  ret._out = malloc(sizeof(int) * out);
+  ret._type = type;
+  
+  ret._num_inputs = 0;
+  ret._num_outputs = 0;
+  ret._delay = INT_MAX;   // Initialize at max value
+  ret._in = malloc(sizeof(int) * MAX_GATE_INPUTS);
+
+  ret._size = MAX_GATE_INPUTS; // Pick a minimum size to alloc
+  ret._out = malloc(sizeof(int) * MAX_GATE_INPUTS);
+  
   return ret;
+}
+
+// Adds a fanout to a node
+void fanout_node(node n, int out)
+{
+  if (n._num_outputs == n._size)  // Need to reallocate
+  {
+    n._size *= 2;  // Double size
+    int* buf = realloc(n._out, sizeof(int) * n._size);
+    if (buf == NULL)  // If realloc not successful, exit
+    {
+      printf("Error reallocing output list");
+      exit(1);
+    }
+    n._out = buf;
+  }
+  n._out[n._num_outputs] = out; // Add fanout to list of outputs
+  n._num_outputs += 1;          // Increment # of outputs
+}
+
+// Adds a fanout to a node
+void fanin_node(node n, int in)
+{
+  if (n._num_inputs == MAX_GATE_INPUTS)
+  {
+    printf("Already have max inputs to node %d",n._id);
+    exit(2);
+  }
+
+  n._in[n._num_inputs] = in;
+  n._num_inputs += 1;
+}
+
+// Gets the number of inputs of a cell given its ID
+int get_num_inputs(int cell_id, cell_lib lib)
+{
+  if (cell_id < lib._num_simple)
+    return lib._s[cell_id]._num_inputs;
+  else
+    return lib._c[cell_id - lib._num_simple - 1]._num_inputs;
 }
 
 // Print simple cell
@@ -106,8 +155,8 @@ void print_lib(cell_lib l)
 int main (int argc, char *argv[])
 {
   int max_delay = 0;
-  cell_lib LIB;
-  int ID = 0; // for assigning _id to simple and complex cells in LIB
+  cell_lib LIB; // Library of simple and complex cells
+  int ID = 0;   // for assigning _id to simple and complex cells in LIB
   FILE *fp;
 
   /* Make sure there's a file name argument: */
@@ -133,14 +182,13 @@ int main (int argc, char *argv[])
   */
   int G, num_inputs, delta;
   fscanf(fp, "%d", &G);
-  // printf("%d\n", G);
   LIB._num_simple = G;  // Initialize number of simple cells in library
   LIB._s = malloc(sizeof(simple) * G);  // Allocate memory for simple cells in lib
 
+  // Populate library with simple cells
   for (int i = 0; i < G; i++)
   {
     fscanf(fp, "%d %d", &num_inputs, &delta);
-    // printf("%d %d\n", num_inputs, delta);
     LIB._s[i]._id = ID++;
     LIB._s[i]._num_inputs = num_inputs;
     LIB._s[i]._delay = delta;
@@ -160,19 +208,19 @@ int main (int argc, char *argv[])
    */
   int C, u, v, d, e;
   fscanf(fp, "%d", &C);
-  // printf("%d\n", C);
   LIB._num_complex = C;
   LIB._c = malloc(sizeof(complex) * C);
 
+  // Populate library with complex cells
   for (int i = 0; i < C; i++)
   {
     fscanf(fp, "%d %d %d %d", &u, &v, &d, &e);
-    // printf("%d %d %d %d\n", u, v, d, e);
     LIB._c[i]._id = ID++;
     LIB._c[i]._u = u;
     LIB._c[i]._v = v;
     LIB._c[i]._d = d;
     LIB._c[i]._e = e;
+    LIB._c[i]._num_inputs = get_num_inputs(u, LIB) + get_num_inputs(v, LIB);
   }
 
   /* Read in the DAG */
@@ -188,15 +236,25 @@ int main (int argc, char *argv[])
         Gates specified in topological order -> a line that describes gate X will only
          contain fanin nodes w/ identifier < X. Node w/o fanouts connects to primary output.
    */
-  int I, N;
+  int I, N, type, in, num_in;
   fscanf(fp, "%d %d", &I, &N);
-  // printf("%d %d\n", I, N);
-  int delays[N];
-
-  for (int i = 0; i < N; i++)
+  // I + N nodes in the DAG (I primary inputs + N intermediary/output nodes)
+  // int delays[I + N];
+  node DAG[I + N];    // Array of nodes to represent the DAG
+  
+  for (int n = N; n < I + N; n++) // Primary inputs aren't gates
   {
-    delays[i] = 0;
-    // Build the DAG;
+    fscanf(fp, "%d", &type); // Get gate type
+    DAG[n] = new_node(ID++, type);
+
+    num_in = get_num_inputs(type, LIB);
+    for (int i = 0; i < num_in; i++)
+    {
+      fscanf(fp, "%d", &in);
+      fanin_node(DAG[n], in);   // Add last read node as input to curr node
+      fanout_node(DAG[in], n);  // Add cur node as output from last read node
+    }
+    // delays[n] = 0;
   }
 
   /* Done with reading the input: */
