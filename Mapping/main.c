@@ -89,34 +89,34 @@ node new_node(int id, int type)
 }
 
 // Adds a fanout to a node
-void fanout_node(node n, int out)
+void fanout_node(node* n, int out)
 {
-  if (n._num_outputs == n._size)  // Need to reallocate
+  if (n->_num_outputs == n->_size)  // Need to reallocate
   {
-    n._size *= 2;  // Double size
-    int* buf = realloc(n._out, sizeof(int) * n._size);
+    n->_size *= 2;  // Double size
+    int* buf = realloc(n->_out, sizeof(int) * n->_size);
     if (buf == NULL)  // If realloc not successful, exit
     {
       printf("Error reallocing output list");
       exit(1);
     }
-    n._out = buf;
+    n->_out = buf;
   }
-  n._out[n._num_outputs] = out; // Add fanout to list of outputs
-  n._num_outputs += 1;          // Increment # of outputs
+  n->_out[n->_num_outputs] = out; // Add fanout to list of outputs
+  n->_num_outputs += 1;          // Increment # of outputs
 }
 
 // Adds a fanout to a node
-void fanin_node(node n, int in)
+void fanin_node(node* n, int in)
 {
-  if (n._num_inputs == MAX_GATE_INPUTS)
+  if (n->_num_inputs == MAX_GATE_INPUTS)
   {
-    printf("Already have max inputs to node %d",n._id);
+    printf("Already have max inputs to node %d",n->_id);
     exit(2);
   }
 
-  n._in[n._num_inputs] = in;
-  n._num_inputs += 1;
+  n->_in[n->_num_inputs] = in;
+  n->_num_inputs += 1;
 }
 
 // Gets the number of inputs of a cell given its ID
@@ -131,13 +131,13 @@ int get_num_inputs(int cell_id, cell_lib lib)
 // Print simple cell
 void print_simple(simple s)
 {
-  printf("Simple | ID: %d  in: %d  delay: %d\n",s._id,s._num_inputs,s._delay);
+  printf("Simple | ID: %d, in: %d, delay: %d\n",s._id,s._num_inputs,s._delay);
 }
 
 // Print complex cell
 void print_complex(complex c)
 {
-  printf("Complex | ID: %d  u: %d  v: %d  d: %d  e: %d\n",c._id,c._u,c._v,c._d,c._e);
+  printf("Complex | ID: %d, u: %d, v: %d, d: %d, e: %d\n",c._id,c._u,c._v,c._d,c._e);
 }
 
 // Print library of cells
@@ -147,6 +147,20 @@ void print_lib(cell_lib l)
     print_simple(l._s[i]);
   for (int i = 0; i < l._num_complex; i++)
     print_complex(l._c[i]);
+}
+
+// Print node
+void print_node(node n)
+{
+  printf("Node | ID: %d, Type: %d, # in: %d, # out: %d, delay: %d, size: %d\n",
+    n._id,n._type,n._num_inputs, n._num_outputs, n._delay, n._size);
+  printf("     | In: ");
+  for (int i = 0; i < n._num_inputs; i++)
+    printf("%d, ", n._in[i]);
+  printf("\n     | Out: ");
+  for (int i = 0; i < n._num_outputs; i++)
+    printf("%d, ", n._out[i]);
+  printf("\n");
 }
 
 /************************************************************************
@@ -239,22 +253,25 @@ int main (int argc, char *argv[])
   int I, N, type, in, num_in;
   fscanf(fp, "%d %d", &I, &N);
   // I + N nodes in the DAG (I primary inputs + N intermediary/output nodes)
-  // int delays[I + N];
   node DAG[I + N];    // Array of nodes to represent the DAG
+
+  for (int n = 0; n < I; n++)
+  {
+    DAG[n] = new_node(n,-1);
+  }
   
-  for (int n = N; n < I + N; n++) // Primary inputs aren't gates
+  for (int n = I; n < I + N; n++) // Primary inputs aren't gates
   {
     fscanf(fp, "%d", &type); // Get gate type
-    DAG[n] = new_node(ID++, type);
-
+    DAG[n] = new_node(n, type);
     num_in = get_num_inputs(type, LIB);
     for (int i = 0; i < num_in; i++)
     {
       fscanf(fp, "%d", &in);
-      fanin_node(DAG[n], in);   // Add last read node as input to curr node
-      fanout_node(DAG[in], n);  // Add cur node as output from last read node
+      fanin_node(&DAG[n], in);   // Add last read node as input to curr node
+      fanout_node(&DAG[in], n);  // Add cur node as output from last read node
     }
-    // delays[n] = 0;
+    fscanf(fp,"\n"); // Clear newline character
   }
 
   /* Done with reading the input: */
@@ -266,9 +283,11 @@ int main (int argc, char *argv[])
    * Need to split DAG into new trees when a node has >1 fanout (maybe?)
    */
 
-  /* ... */
+
 
   print_lib(LIB);
+  for (int i = 0; i < I+N; i++)
+    print_node(DAG[i]);
 
   /* Print the solution: */
   printf ("%d\n", max_delay);
