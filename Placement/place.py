@@ -39,15 +39,14 @@ def main():
     num_edges = int(line[2])  # Number of edges in graph
 
     nodes = []
+    FLOAT_START = num_fixed + num_floating  # Where to begin indexing for floating points
 
     # Read in locations of fixed points
     for i in range(num_fixed):
         line = file.readline()
-
         # Skip empty line, if there is one
         if len(line.strip()) == 0:
             line = file.readline()
-
         line = line.split()
         nodes.append(Node(i, float(line[0]), float(line[1])))
 
@@ -58,16 +57,23 @@ def main():
     # Read in edges
     for i in range(num_edges):
         line = file.readline()
-
         # Skip empty line, if there is one
         if len(line.strip()) == 0:
             line = file.readline()
-
         line = line.split()
-
         # Add edges
         nodes[int(line[0])].add_edge(int(line[1]))
         nodes[int(line[1])].add_edge(int(line[0]))
+
+    # Calculate Manhattan distances of edges
+    total_distance = 0
+    for n in nodes:
+        for e in n.edges:
+            # If edge id > node id, it hasn't been accounted for yet
+            if e > n.id:
+                x = abs(n.x - nodes[e].x)
+                y = abs(n.y - nodes[e].y)
+                total_distance += x + y
 
 
 if __name__ == '__main__':
