@@ -16,6 +16,13 @@
 /* LOCAL TYPE DEFINITIONS                                                   */
 /* ------------------------------------------------------------------------ */
 
+typedef struct node
+{
+    float x;    // x coord
+    float y;    // y coord
+    int* edges; // Connections to other nodes
+} node;
+
 /* ------------------------------------------------------------------------ */
 /* FUNCTION DEFINITIONS                                                     */
 /* ------------------------------------------------------------------------ */
@@ -23,6 +30,8 @@
 int
 main(int argc, char *argv[])
 {
+    float move_thresh;
+    int num_fixed, num_floating, num_edges;
 
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
