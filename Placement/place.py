@@ -2,10 +2,6 @@ import numpy as np
 import sys
 
 
-# For debugging
-# np.set_printoptions(threshold=sys.maxsize)
-
-
 # Node class
 class Node:
     def __init__(self, id=0, x=0, y=0):
@@ -22,8 +18,9 @@ class Node:
               ")" + "\nEdges: " + str(self.edges))
 
     def add_edge(self, edge):
-        self.edges.append(edge)
-        self.edges.sort()
+        if edge not in self.edges:
+            self.edges.append(edge)
+            self.edges.sort()
 
 
 # Main function
@@ -69,17 +66,14 @@ def main():
         nodes[int(line[0])].add_edge(int(line[1]))
         nodes[int(line[1])].add_edge(int(line[0]))
 
-    # for n in nodes:
-    #     print(n.__repr__())
-
-    # Solve linear system of eqs for each floating point
     dim = num_floating   # Dimension of matrices is # of sets of coords being solved for
 
     # Solve x
-    A = np.zeros((dim, dim))    # Matrix A
+    a = np.zeros((dim, dim))    # Matrix A
     b = np.zeros(dim)     # Matrix b
     # For each row of A and index of b
     for i in range(dim):
+        count = 0
         # Sum x-coords of fixed points attached to the floating point
         j_range = len(nodes[i + num_fixed].edges)   # Iterate over each edge to the floating point
         for j in range(j_range):
@@ -89,19 +83,14 @@ def main():
         # Create row of A
         for j in range(dim):
             if i == j:
-                A[i, j] = 2 * j_range   # Diagonal = 2 * # of edges the floating point is in
+                a[i, j] = 2 * j_range   # Diagonal = 2 * # of edges the floating point is in
             elif (j + num_fixed) in nodes[i + num_fixed].edges:
-                A[i, j] = -2    # If there's a connection to that floating point
+                a[i, j] = -2    # If there's a connection to that floating point
+                count += 1
             else:
-                A[i, j] = 0     # No connections to other floating points
+                a[i, j] = 0     # No connections to other floating points
 
-    # TODO remove
-    print("A")
-    print(A)
-    print("b")
-    print(b)
-
-    x = np.linalg.solve(A, b)
+    x = np.linalg.solve(a, b)
     for i in range(dim):
         nodes[i + num_fixed].x = int(x[i])
 
@@ -109,18 +98,15 @@ def main():
     # Matrix A should remain the same
     b = np.zeros(dim)     # Matrix b
     for i in range(dim):
-        # Sum y-coords of fixed points attached to the floating point
+        # Sum y-coordinates of fixed points attached to the floating point
         j_range = len(nodes[i + num_fixed].edges)   # Iterate over each edge to the floating point
         for j in range(j_range):
             e = nodes[i + num_fixed].edges[j]   # Edge to check
             if e < num_fixed:   # Connected to fixed point
                 b[i] = b[i] + abs(2 * nodes[e].y)   # Add 2*y of fixed point
-    y = np.linalg.solve(A, b)
+    y = np.linalg.solve(a, b)
     for i in range(dim):
         nodes[i + num_fixed].y = int(y[i])
-
-    print("b")
-    print(b)    # TODO remove
 
     # Calculate Manhattan distances of edges
     total_distance = 0
