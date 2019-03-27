@@ -73,20 +73,18 @@ def main():
     b = np.zeros(dim)     # Matrix b
     # For each row of A and index of b
     for i in range(dim):
-        count = 0
-        # Sum x-coords of fixed points attached to the floating point
+        # Sum x-coordinates of fixed points attached to the floating point
         j_range = len(nodes[i + num_fixed].edges)   # Iterate over each edge to the floating point
         for j in range(j_range):
             e = nodes[i + num_fixed].edges[j]   # Edge to check
             if e < num_fixed:   # Connected to fixed point
-                b[i] = b[i] + abs(2 * nodes[e].x)  # Add 2*x of fixed point
+                b[i] = b[i] + (2 * nodes[e].x)  # Add 2*x of fixed point
         # Create row of A
         for j in range(dim):
             if i == j:
                 a[i, j] = 2 * j_range   # Diagonal = 2 * # of edges the floating point is in
             elif (j + num_fixed) in nodes[i + num_fixed].edges:
                 a[i, j] = -2    # If there's a connection to that floating point
-                count += 1
             else:
                 a[i, j] = 0     # No connections to other floating points
 
@@ -103,7 +101,7 @@ def main():
         for j in range(j_range):
             e = nodes[i + num_fixed].edges[j]   # Edge to check
             if e < num_fixed:   # Connected to fixed point
-                b[i] = b[i] + abs(2 * nodes[e].y)   # Add 2*y of fixed point
+                b[i] = b[i] + (2 * nodes[e].y)   # Add 2*y of fixed point
     y = np.linalg.solve(a, b)
     for i in range(dim):
         nodes[i + num_fixed].y = int(y[i])
@@ -117,8 +115,8 @@ def main():
                 x = abs(n.x - nodes[e].x)
                 y = abs(n.y - nodes[e].y)
                 total_distance += x + y
-        if n.id >= num_fixed:       # TODO remove
-            print(n.__repr__())
+        # if n.id >= num_fixed:       # For debugging
+        #     print(n.__repr__())
     print(total_distance)
 
 
