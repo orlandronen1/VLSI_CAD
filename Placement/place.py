@@ -4,7 +4,7 @@ import sys
 
 # Node class
 class Node:
-    def __init__(self, id=0, x=0.0, y=0.0):
+    def __init__(self, id=0, x=0, y=0):
         self.id = id
         self.x = x
         self.y = y
@@ -19,6 +19,7 @@ class Node:
 
     def add_edge(self, edge):
         self.edges.append(edge)
+        self.edges.sort()
 
 
 # Main function
@@ -39,7 +40,6 @@ def main():
     num_edges = int(line[2])  # Number of edges in graph
 
     nodes = []
-    FLOAT_START = num_fixed + num_floating  # Where to begin indexing for floating points
 
     # Read in locations of fixed points
     for i in range(num_fixed):
@@ -48,7 +48,7 @@ def main():
         if len(line.strip()) == 0:
             line = file.readline()
         line = line.split()
-        nodes.append(Node(i, float(line[0]), float(line[1])))
+        nodes.append(Node(i, int(line[0]), int(line[1])))
 
     # Add floating nodes
     for i in range(num_fixed, num_fixed + num_floating):
@@ -65,6 +65,55 @@ def main():
         nodes[int(line[0])].add_edge(int(line[1]))
         nodes[int(line[1])].add_edge(int(line[0]))
 
+    for n in nodes:
+        print(n.__repr__())
+
+    # Solve linear system of eqs for each floating point
+    dim = num_floating   # Dimension of matrices is # of sets of coords being solved for
+
+    # Solve x
+    A = np.zeros((dim, dim))    # Matrix A
+    b = np.zeros(dim)     # Matrix b
+    # For each row of A and index of b
+    for i in range(dim):
+        # Sum x-coords of fixed points attached to the floating point
+        j_range = len(nodes[i + num_fixed].edges)   # Iterate over each edge to the floating point
+        for j in range(j_range):
+            e = nodes[i + num_fixed].edges[j]   # Edge to check
+            if e < num_fixed:   # Connected to fixed point
+                b[i] = b[i] + abs(2 * nodes[e].x)  # Add 2*x of fixed point
+        # Create row of A
+        for j in range(j_range):
+            if i == j:
+                A[i, j] = 2 * j_range   # Diagonal = 2 * # of edges the floating point is in
+            elif (j + num_fixed) in nodes[i + num_fixed].edges:
+                A[i, j] = -2    # If there's a connection to that floating point
+            else:
+                A[i, j] = 0     # No connections to other floating points
+    x = np.linalg.solve(A, b)
+    for i in range(dim):
+        nodes[i + num_fixed].x = x[i]
+
+    # TODO remove
+    print(A)
+    print(b)
+
+    # Solve y
+    # Matrix A should remain the same
+    b = np.zeros(dim)     # Matrix b
+    for i in range(dim):
+        # Sum y-coords of fixed points attached to the floating point
+        j_range = len(nodes[i + num_fixed].edges)   # Iterate over each edge to the floating point
+        for j in range(j_range):
+            e = nodes[i + num_fixed].edges[j]   # Edge to check
+            if e < num_fixed:   # Connected to fixed point
+                b[i] = b[i] + abs(2 * nodes[e].y)   # Add 2*y of fixed point
+    y = np.linalg.solve(A, b)
+    for i in range(dim):
+        nodes[i + num_fixed].y = y[i]
+
+    print(b)    # TODO remove
+
     # Calculate Manhattan distances of edges
     total_distance = 0
     for n in nodes:
@@ -74,7 +123,7 @@ def main():
                 x = abs(n.x - nodes[e].x)
                 y = abs(n.y - nodes[e].y)
                 total_distance += x + y
-
+    print(total_distance)
 
 if __name__ == '__main__':
     main()
