@@ -1,0 +1,11 @@
+* test circuit 3
+load D 1
+supp A 1
+wire A B 1 0
+wire B D 1 0
+wire A C 1 0 
+wire C D 1 0
+solv B 
+solv C
+* 
+*

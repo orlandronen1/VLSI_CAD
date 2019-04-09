@@ -1,0 +1,8 @@
+* test circuit 1
+DCAP n1 2
+DCAP n2 5
+LOAD n2 1
+WIRE n1 n2 3 0
+SUPP n1 4
+SOLV n2
+SOLV n1
