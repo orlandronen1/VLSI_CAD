@@ -159,6 +159,38 @@ double Circuit::GetVoltage(const char *name, int howmany) {
   }
 
   // do the calculation -- to be implemented
+
+  node home = FindNode(name);   // Get the node to solve for
+  node curr = home;             // Current node
+  double voltage = 0.0;         // Voltage cost
+
+  // Do howmany walks
+  for (int i = 0; i < howmany; i++)
+  {
+    // Get total conductance of attached wires
+    double total_res = 0;
+
+    // Find which one to walk to next
+    double prob = dbl_rand();
+    double curr_prob = 1;   // Equal to conductance of first wire. TODO change to that
+    while (true)
+    {
+        if (prob <= curr_prob)
+        {
+            // Go to next node
+            // curr = next node
+            break;
+        }
+        // curr_prob = curr_prob + conductance % of next wire
+    }
+
+    // If source node, stop
+    
+
+    // Else, calculate cost
+
+  }
+
   return ( 0.0 );
 
 }

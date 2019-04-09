@@ -119,10 +119,10 @@ class Circuit : public graph {
 
  private:
 
-  typedef edge_map<WireProperties>                               WireList;
-  typedef node_map<double>                                       NodeList;
+  typedef edge_map<WireProperties>       WireList;
+  typedef node_map<double>               NodeList;
   typedef map<const char*, node, eqstr>  NodeMap;
-  typedef vector<const char*>                                    NameVec;
+  typedef vector<const char*>            NameVec;
 
   NodeMap        _nodes;             // node map
   WireList       _wires;             // wires and their properties
