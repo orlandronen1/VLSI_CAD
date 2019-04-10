@@ -5,12 +5,13 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <GTL/node.h>
 
 #include "circuit.h"
 #include "util.h"
 
 #define TRACE_LOADING 1
-#define TRACE_WALKING 0
+#define TRACE_WALKING 1
 
 Circuit::~Circuit() {
 }
@@ -146,6 +147,7 @@ void Circuit::GetAllVoltages(int howmany) {
   for (unsigned int i=0; i<_what.size(); i++) {
     printf("V(%s) = %g\n", _what[i], GetVoltage(_what[i], howmany) );
   }
+  cout << "NumWires: " << NumWires() << " -- NumNodes: " << NumNodes();
 }
 
 // algorithm to calculate the voltages
@@ -160,38 +162,86 @@ double Circuit::GetVoltage(const char *name, int howmany) {
 
   // do the calculation -- to be implemented
 
-  node home = FindNode(name);   // Get the node to solve for
-  node curr = home;             // Current node
+  node curr = FindNode(name);   // Get the node to solve for
+  #if TRACE_WALKING
+    cout << "Home node: " << curr << " -- name: " << name << "\n";
+    cout << "--Load: " << NodeLOAD(curr) << " -- Supp: " << NodeSUPP(curr) << "\n";
+  #endif
   double voltage = 0.0;         // Voltage cost
 
   // Do howmany walks
   for (int i = 0; i < howmany; i++)
   {
     // Get total conductance of attached wires
-    double total_res = 0;
+    double total_conductance = 0;
+    node::inout_edges_iterator w = curr.inout_edges_begin();
+    int degree = curr.outdeg();
+    if (degree == 0)
+        degree = curr.indeg();
+    #if TRACE_WALKING
+        cout << "\tDegree: " << degree << "\n";
+    #endif
+    for (int j = 0; j < degree; j++)
+    {
+        edge curr_edge = *w;
+        total_conductance += (1 / WireRES(curr_edge));
+        w++;
+        #if TRACE_WALKING
+            cout << "\tCurr Edge: " << curr_edge << " j: " << j << "\n";
+            cout << "\tEdge conductance: " << 1 / WireRES(curr_edge) << "\n";
+        #endif
+    }
+    #if TRACE_WALKING
+        cout << "\tTotal conductance: " << total_conductance << "\n";
+    #endif
+
+    // Calculate cost
+    // If not a source, added cost is negative
+    if (NodeSUPP(curr) == 0)
+    {
+        #if TRACE_WALKING
+            cout << "\tNot a source, subtracting cost: " << NodeLOAD(curr) / total_conductance << "\n";
+        #endif
+        voltage -= (NodeLOAD(curr) / total_conductance);
+    }
+    // Else, if source, added cost is positive. Stop walk.
+    else
+    {
+        #if TRACE_WALKING
+            cout << "\tSource, voltage added: " << NodeSUPP(curr) << "\n";
+        #endif
+        voltage += NodeSUPP(curr);
+        break;
+    }
 
     // Find which one to walk to next
     double prob = dbl_rand();
-    double curr_prob = 1;   // Equal to conductance of first wire. TODO change to that
-    while (true)
+    #if TRACE_WALKING
+        cout << "\tRandom prob: " << prob << "\n";
+    #endif
+    double curr_prob = 0.0;
+    w = curr.inout_edges_begin();
+    for (int j = 0; j < degree; j++)
     {
+        edge curr_edge = *w;
+        curr_prob += 1 / WireRES(curr_edge);
+        // If going across this wire, change to opposite node and break loop
         if (prob <= curr_prob)
         {
-            // Go to next node
-            // curr = next node
+            curr = curr_edge.opposite(curr); 
+            #if TRACE_WALKING
+                cout << "\tNext node: " << curr << ", j " << j << "\n";
+            #endif
             break;
         }
-        // curr_prob = curr_prob + conductance % of next wire
+        #if TRACE_WALKING
+            cout << "\tLooking for next node\n";
+        #endif
+        w++;
     }
-
-    // If source node, stop
-    
-
-    // Else, calculate cost
-
   }
 
-  return ( 0.0 );
+  return voltage;
 
 }
 
