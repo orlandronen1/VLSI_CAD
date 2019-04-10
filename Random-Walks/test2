@@ -1,0 +1,19 @@
+* test circuit 2
+load A 0.3
+load B 0.1
+load C 0.05
+load D 0.05
+supp S1 1
+supp S2 1
+supp S3 1
+wire S1 A 2 0
+wire A  C 1 0
+wire C  B 1 0
+wire B S2 1 0
+wire C D  4 0
+wire D S3 1 0
+solv A 
+solv B
+solv D
+* 
+*
