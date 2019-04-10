@@ -10,8 +10,9 @@
 #include "circuit.h"
 #include "util.h"
 
-#define TRACE_LOADING 1
+#define TRACE_LOADING 0
 #define TRACE_WALKING 1
+#define ALWAYS_RANDOM 0
 
 Circuit::~Circuit() {
 }
@@ -147,13 +148,16 @@ void Circuit::GetAllVoltages(int howmany) {
   for (unsigned int i=0; i<_what.size(); i++) {
     printf("V(%s) = %g\n", _what[i], GetVoltage(_what[i], howmany) );
   }
-  cout << "NumWires: " << NumWires() << " -- NumNodes: " << NumNodes();
 }
 
 // algorithm to calculate the voltages
 double Circuit::GetVoltage(const char *name, int howmany) {
   extern double dbl_rand();
   extern bool is_dbl_zero(double);
+
+  #if ALWAYS_RANDOM
+  srand(time(0));
+  #endif
 
   if (  NodeExists(name) != 0 ) {
     printf("Unable to locate node %s. Skipped.\n", name);
@@ -175,10 +179,11 @@ double Circuit::GetVoltage(const char *name, int howmany) {
     // Get total conductance of attached wires
     double total_conductance = 0;
     node::inout_edges_iterator w = curr.inout_edges_begin();
-    int degree = curr.outdeg();
+    int degree = curr.degree();
     if (degree == 0)
         degree = curr.indeg();
     #if TRACE_WALKING
+        cout << "----Curr Node: " << curr << "\n";
         cout << "\tDegree: " << degree << "\n";
     #endif
     for (int j = 0; j < degree; j++)
@@ -187,8 +192,8 @@ double Circuit::GetVoltage(const char *name, int howmany) {
         total_conductance += (1 / WireRES(curr_edge));
         w++;
         #if TRACE_WALKING
-            cout << "\tCurr Edge: " << curr_edge << " j: " << j << "\n";
-            cout << "\tEdge conductance: " << 1 / WireRES(curr_edge) << "\n";
+            // cout << "\tCurr Edge: " << curr_edge << " j: " << j << "\n";
+            // cout << "\tEdge conductance: " << 1 / WireRES(curr_edge) << "\n";
         #endif
     }
     #if TRACE_WALKING
@@ -221,23 +226,37 @@ double Circuit::GetVoltage(const char *name, int howmany) {
     #endif
     double curr_prob = 0.0;
     w = curr.inout_edges_begin();
-    for (int j = 0; j < degree; j++)
+    if (degree == 1)
     {
-        edge curr_edge = *w;
-        curr_prob += 1 / WireRES(curr_edge);
-        // If going across this wire, change to opposite node and break loop
-        if (prob <= curr_prob)
-        {
-            curr = curr_edge.opposite(curr); 
-            #if TRACE_WALKING
-                cout << "\tNext node: " << curr << ", j " << j << "\n";
-            #endif
-            break;
-        }
+        edge e = *w;
+        curr = e.opposite(curr); 
         #if TRACE_WALKING
-            cout << "\tLooking for next node\n";
+            // cout << "\tNext node: " << curr << "\n";
         #endif
-        w++;
+    }
+    else
+    {
+        for (int j = 0; j < degree; j++)
+        {
+            edge curr_edge = *w;
+            curr_prob += ((1 / WireRES(curr_edge)) / total_conductance);
+            #if TRACE_WALKING
+                cout << "\tcurr_prob: " << curr_prob << "\n";
+            #endif
+            // If going across this wire, change to opposite node and break loop
+            if (prob <= curr_prob)
+            {
+                curr = curr_edge.opposite(curr); 
+                #if TRACE_WALKING
+                    // cout << "\tNext node: " << curr << ", j " << j << "\n";
+                #endif
+                break;
+            }
+            #if TRACE_WALKING
+                // cout << "\tLooking for next node\n";
+            #endif
+            w++;
+        }
     }
   }
 
