@@ -3,6 +3,10 @@
    Written by Kartik Mohanram  (kmram@rice.edu)
 */
 
+#define Z '0'
+#define O '1'
+#define X '2'
+
 #include "testVector.h"
 #include <math.h>
 
@@ -20,11 +24,6 @@
  * that a simple solution is better than a complex one!  */ 
 
 void testVector::compress(int cubeWidth) {
-
-    // Chars to compare bits against
-    const char Z = '0';
-    const char O = '1';
-    const char X = '2';
     // Size 2^cubeWidth array, holds frequency of minterms occuring for all possible 16 terms
     int freqs[pow(2,cubeWidth)];
 
