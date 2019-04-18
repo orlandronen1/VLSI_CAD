@@ -4,6 +4,7 @@
 */
 
 #include "testVector.h"
+#include <math.h>
 
 /* You need to provide the solution to the testVector::compress routine. All
  * updates to the test vector set are to be done on the
@@ -20,6 +21,29 @@
 
 void testVector::compress(int cubeWidth) {
 
- // Your solution here 
+    // Chars to compare bits against
+    const char Z = '0';
+    const char O = '1';
+    const char X = '2';
+    // Size 2^cubeWidth array, holds frequency of minterms occuring for all possible 16 terms
+    int freqs[pow(2,cubeWidth)];
 
+    std::string buff;   // Buffer for modified test vector
+    std::string vec;    // Holds the current test vector
+
+    // When finding a match, or possible match, increment that minterm's frequency
+    // Find two highest values, assign their indices (in binary) as minterms
+    // For each term in the vector
+    // for (int i = 0; i < testVectorSet.front().length(); i += cubeWidth)
+    // {
+
+    // }
+
+    // Try to match as many terms w/ X's to the minterms
+    // Matching against each minterm:
+    // - If all non-X bits are equal to the minterm's, then they match
+    // - - append matching minterm to buffer
+    // - If no match against either minterm, keep as is
+    // -- append current term to buffer
+    // - 
 }
