@@ -25,10 +25,10 @@
 
 void testVector::compress(int cubeWidth) {
     // Size 2^cubeWidth array, holds frequency of minterms occuring for all possible 16 terms
-    int freqs[pow(2,cubeWidth)];
+    int freqs[int(pow(2,cubeWidth))];
 
-    std::string buff;   // Buffer for modified test vector
-    std::string vec;    // Holds the current test vector
+    string buff;   // Buffer for modified test vector
+    string vec;    // Holds the current test vector
 
     // When finding a match, or possible match, increment that minterm's frequency
     // Find two highest values, assign their indices (in binary) as minterms
@@ -45,4 +45,44 @@ void testVector::compress(int cubeWidth) {
     // - If no match against either minterm, keep as is
     // -- append current term to buffer
     // - 
+}
+
+// Recursively finds all matches to integer values for a given string
+vector<int> all_matches(string cube)
+{
+    vector<int> ret;
+
+    // No X's in this string
+    if (cube.find(X) == std::string::npos)
+        ret.push_back(stoi(cube, nullptr, 2));
+    else    // There is an X. Replace it with 0 and 1 and call 2 more times.
+    {
+        string with_zero;
+        string with_one;
+
+        size_t index = cube.find(X);    // Find first X
+        if (index == 0)                 // First character
+        {
+            with_zero = cube.substr(0,1) + Z + cube.substr(2, string::npos);
+            with_one  = cube.substr(0,1) + O + cube.substr(2, string::npos);
+        }
+        else if (index == cube.length() - 1)    // Last character
+        {
+            with_zero = cube.substr(0,index) + Z;
+            with_one  = cube.substr(0,index) + O;
+        }
+        else    // Any other character
+        {
+            with_zero = cube.substr(0,index) + Z + cube.substr(index + 1, string::npos);
+            with_one  = cube.substr(0,index) + O + cube.substr(index + 1, string::npos);
+        }
+        
+        vector<int> first = all_matches(with_zero);
+        vector<int> second = all_matches(with_one);
+
+        ret.insert(ret.end(), first.begin(), first.end());
+        ret.insert(ret.end(), second.begin(), second.end());
+    }
+    
+    return ret;
 }
