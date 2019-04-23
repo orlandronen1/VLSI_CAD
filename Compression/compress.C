@@ -17,60 +17,76 @@
 void all_matches(string cube, std::map<string, int> &m);
 
 // Finds keys of highest 2 values in a array
-vector<string> find_maxes(std::map<string, int> &m);
+string find_max(std::map<string, int> &m);
 
 // Checks if a term matches a string
 bool check_match(string cube, string term);
 
-/* You need to provide the solution to the testVector::compress routine. All
- * updates to the test vector set are to be done on the
- * testVector::testVectorSet member, so that the printCompressedTestSet method
- * produces the appropriate output.
- *
- * Also, remember to update members m1 and m2 with the first and second most
- * frequently occuring minterms for the final output 
- *
- * Do not make any changes to main.C. You are allowed to add members/methods to
- * the body of the testVector class, in addition to any stand-alone methods. My
- * solution, with debug statements, runs to 75 lines: as always, this means
- * that a simple solution is better than a complex one!  */ 
 
 void testVector::compress(int cubeWidth) {
-    // Size 2^cubeWidth array, holds frequency of minterms occuring for all possible terms
-    // int freqs[ int(pow(2,cubeWidth)) ];
     map<string, int> freqs;
     int vector_len = testVectorSet.front().length();
-
-    // Find most common minterms in all vectors
     vector<string>::iterator iter;
-    // For each vector in the set
+
+    // Find frequencies
     for (iter = testVectorSet.begin(); iter < testVectorSet.end(); iter++)
     {
         for (int i = 0; i < vector_len; i += cubeWidth) // For each term in the vector
         {
             string cube = returnCube(*iter, i, cubeWidth);
-            #if TRACE
-            cout << "TERM: " << cube << "\n";
-            #endif
-            all_matches(cube, freqs);
+            if (cube.find(X) != string::npos)
+            {
+                #if TRACE
+                cout << "TERM: " << cube << "\n";
+                #endif
+                all_matches(cube, freqs);
+            }
         }
     }
-
-    // Get minterms
-    vector<string> minterms = find_maxes(freqs);
-    m1 = minterms.front();
-    m2 = minterms.back();
-
-    // Start matching/replacing terms with minterms
+    m1 = find_max(freqs);
+    // Replace matching terms with minterm 1
     for (iter = testVectorSet.begin(); iter < testVectorSet.end(); iter++)
     {
         string buf;
         for (int i = 0; i < vector_len; i+= cubeWidth)
         {
             string cube = returnCube(*iter, i, cubeWidth);
-            if (check_match(cube, m1))  // Matches first minterm
+            if (check_match(cube, m1))  // Matches minterm
                 buf += m1;
-            else if (check_match(cube, m2)) // Matches second minterm
+            else    // Doesn't match either minterm
+                buf += cube;
+        }
+        *iter = buf;
+    }
+
+    #if TRACE
+    cout << "*\n* FINISHED REPLACING WITH FIRST MINTERM\n*\n";
+    #endif
+
+    // Do the same process as above for second minterm, after replacements with first
+    freqs.clear();
+    for (iter = testVectorSet.begin(); iter < testVectorSet.end(); iter++)
+    {
+        for (int i = 0; i < vector_len; i += cubeWidth) // For each term in the vector
+        {
+            string cube = returnCube(*iter, i, cubeWidth);
+            if (cube.find(X) != string::npos)
+            {
+                #if TRACE
+                cout << "TERM: " << cube << "\n";
+                #endif
+                all_matches(cube, freqs);
+            }
+        }
+    }
+    m2 = find_max(freqs);
+    for (iter = testVectorSet.begin(); iter < testVectorSet.end(); iter++)
+    {
+        string buf;
+        for (int i = 0; i < vector_len; i+= cubeWidth)
+        {
+            string cube = returnCube(*iter, i, cubeWidth);
+            if (check_match(cube, m2))  // Matches minterm
                 buf += m2;
             else    // Doesn't match either minterm
                 buf += cube;
@@ -78,6 +94,7 @@ void testVector::compress(int cubeWidth) {
         *iter = buf;
     }
 }
+
 
 void all_matches(string cube, std::map<string, int> &m)
 {
@@ -116,32 +133,19 @@ void all_matches(string cube, std::map<string, int> &m)
     }
 }
 
-vector<string> find_maxes(std::map<string, int> &m)
+string find_max(std::map<string, int> &m)
 {
-    int max1 = -1;
-    int max2 = -1;
-    vector<string> keys (2, "");
+    int max_val = -1;
+    string max_key;
 
     // Find first max
     for (auto i = m.begin(); i != m.end(); i++)
-        if (i->second > max1)
+        if (i->second > max_val || (i->second == max_val && stoi(i->first,nullptr,2) < stoi(max_key,nullptr,2)) )
         {
-            max1 = i->second;
-            keys.front() = i->first;
+            max_val = i->second;
+            max_key = i->first;
         }
-
-    // Find second max
-    for (auto i = m.begin(); i != m.end(); i++)
-        if (i->second >= max2 && i->first != keys.front())
-        {
-            if (i->second > max2 || keys.back() == "" || stoi(keys.back(), nullptr, 2) > stoi(i->first, nullptr, 2))
-            {
-                max2 = i->second;
-                keys.back() = i->first;
-            }
-        }
-
-    return keys;
+    return max_key;
 }
 
 bool check_match(string cube, string term)
@@ -151,15 +155,7 @@ bool check_match(string cube, string term)
         if (cube[i] == X)
             continue;
         if (cube[i] != term[i])
-        {
-            #if TRACE
-            cout << "--TERM " << cube << " DIDN'T MATCH " << term << "\n";
-            #endif
             return false;
-        }
     }
-    #if TRACE
-    cout << "--TERM " << cube << " MATCHED " << term << "\n";
-    #endif
     return true;
 }
