@@ -6,8 +6,7 @@
 #define Z '0'
 #define O '1'
 #define X '2'
-#define TRACE_COMPRESS 1
-#define TRACE_MATCHING 1
+#define TRACE 1
 
 #include "testVector.h"
 #include <math.h>
@@ -49,10 +48,11 @@ void testVector::compress(int cubeWidth) {
     {
         for (int i = 0; i < vector_len; i += cubeWidth) // For each term in the vector
         {
-            #if TRACE_COMPRESS
-            cout << "TERM: " << returnCube(*iter, i, cubeWidth) << "\n";
+            string cube = returnCube(*iter, i, cubeWidth);
+            #if TRACE
+            cout << "TERM: " << cube << "\n";
             #endif
-            all_matches(returnCube(*iter, i, cubeWidth), freqs);
+            all_matches(cube, freqs);
         }
     }
 
@@ -61,14 +61,22 @@ void testVector::compress(int cubeWidth) {
     m1 = minterms.front();
     m2 = minterms.back();
 
-
-    // Try to match as many terms w/ X's to the minterms
-    // Matching against each minterm:
-    // - If all non-X bits are equal to the minterm's, then they match
-    // - - append matching minterm to buffer
-    // - If no match against either minterm, keep as is
-    // -- append current term to buffer
-    // - 
+    // Start matching/replacing terms with minterms
+    for (iter = testVectorSet.begin(); iter < testVectorSet.end(); iter++)
+    {
+        string buf;
+        for (int i = 0; i < vector_len; i+= cubeWidth)
+        {
+            string cube = returnCube(*iter, i, cubeWidth);
+            if (check_match(cube, m1))  // Matches first minterm
+                buf += m1;
+            else if (check_match(cube, m2)) // Matches second minterm
+                buf += m2;
+            else    // Doesn't match either minterm
+                buf += cube;
+        }
+        *iter = buf;
+    }
 }
 
 void all_matches(string cube, std::map<string, int> &m)
@@ -77,8 +85,8 @@ void all_matches(string cube, std::map<string, int> &m)
     if (cube.find(X) == std::string::npos)
     {
         m[cube]++;
-        #if TRACE_MATCHING
-        cout << "FREQ OF " << cube << " IS NOW " << m[cube] << "\n";
+        #if TRACE
+        cout << "-FREQ OF " << cube << " IS NOW " << m[cube] << "\n";
         #endif
     }
     else    // There is an X. Replace it with 0 and 1 and call 2 more times.
@@ -106,7 +114,6 @@ void all_matches(string cube, std::map<string, int> &m)
         all_matches(with_zero, m);
         all_matches(with_one, m);
     }
-
 }
 
 vector<string> find_maxes(std::map<string, int> &m)
@@ -125,10 +132,13 @@ vector<string> find_maxes(std::map<string, int> &m)
 
     // Find second max
     for (auto i = m.begin(); i != m.end(); i++)
-        if (i->second > max2 && i->first != keys.front())
+        if (i->second >= max2 && i->first != keys.front())
         {
-            max2 = i->second;
-            keys.back() = i->first;
+            if (i->second > max2 || keys.back() == "" || stoi(keys.back(), nullptr, 2) > stoi(i->first, nullptr, 2))
+            {
+                max2 = i->second;
+                keys.back() = i->first;
+            }
         }
 
     return keys;
@@ -136,5 +146,20 @@ vector<string> find_maxes(std::map<string, int> &m)
 
 bool check_match(string cube, string term)
 {
-    
+    for (uint i = 0; i < cube.length(); i++)
+    {
+        if (cube[i] == X)
+            continue;
+        if (cube[i] != term[i])
+        {
+            #if TRACE
+            cout << "--TERM " << cube << " DIDN'T MATCH " << term << "\n";
+            #endif
+            return false;
+        }
+    }
+    #if TRACE
+    cout << "--TERM " << cube << " MATCHED " << term << "\n";
+    #endif
+    return true;
 }
